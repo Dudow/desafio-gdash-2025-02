@@ -15,6 +15,7 @@ type WeatherMessage struct {
 	Humidity    int     `json:"humidity"`
 	WindSpeed   float64 `json:"wind_speed"`
 	Condition   string  `json:"condition"`
+	Precipitation float64 `json:"precipitation"`
 }
 
 func main() {
