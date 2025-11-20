@@ -1,19 +1,18 @@
-import pika
 import json
+import os
+import pika
 import requests
 import time
-from datetime import datetime
 
 # SETTINGS
 
-LAT = -23.55
-LON = -46.63
-LOCATION_NAME = "São Paulo - SP"
-QUEUE_NAME = "weather_queue"
-RABBIT_URL = "amqp://teste:senha@localhost:5672/"
 
-# TO DO: PASS IT TO 3600
-INTERVAL = 10 
+LAT = float(os.getenv("LAT", -23.55))
+LON = float(os.getenv("LON", -46.63))
+LOCATION_NAME = os.getenv("LOCATION_NAME", "São Paulo - SP")
+QUEUE_NAME = os.getenv("QUEUE_NAME", "weather_queue")
+RABBIT_URL = os.getenv("RABBIT_URL", "amqp://teste:senha@rabbitmq:5672/")
+INTERVAL = int(os.getenv("INTERVAL", 10))
 
 # https://open-meteo.com/en/docs#weather_variable_documentation
 WEATHER_CODES_ENUM = {
@@ -49,24 +48,28 @@ def fetch_weather():
     return weather
 
 def send_to_rabbitmq(message):
-    #  RabbitMQ connection 
-    credentials = pika.PlainCredentials('teste', 'senha')
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost', credentials=credentials)
-    )
-    channel = connection.channel()
+    try:
+        #  RabbitMQ connection 
+        parameters = pika.URLParameters(RABBIT_URL)
+        connection = pika.BlockingConnection(parameters)
+        channel = connection.channel()
 
-    channel.queue_declare(queue=QUEUE_NAME)
+        channel.queue_declare(queue=QUEUE_NAME)
 
-    # Push to the queue
-    channel.basic_publish(
-        exchange='',
-        routing_key=QUEUE_NAME,
-        body=json.dumps(message)
-    )
+        # Push to the queue
+        channel.basic_publish(
+            exchange='',
+            routing_key=QUEUE_NAME,
+            body=json.dumps(message)
+        )
 
-    print("It worked!")
-    connection.close()
+        print("It worked!")
+        connection.close()
+
+
+    except Exception as error:
+        print("send to rabbit Error:", error)
+    
 
 if __name__ == "__main__":
     while True:
