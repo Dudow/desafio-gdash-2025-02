@@ -1,7 +1,7 @@
 import pika
 import json
 import requests
-import logging
+import time
 from datetime import datetime
 
 # SETTINGS
@@ -11,6 +11,9 @@ LON = -46.63
 LOCATION_NAME = "São Paulo - SP"
 QUEUE_NAME = "weather_queue"
 RABBIT_URL = "amqp://teste:senha@localhost:5672/"
+
+# TO DO: PASS IT TO 3600
+INTERVAL = 10 
 
 # https://open-meteo.com/en/docs#weather_variable_documentation
 WEATHER_CODES_ENUM = {
@@ -28,14 +31,10 @@ def fetch_weather():
         f"?latitude={LAT}&longitude={LON}&current=relative_humidity_2m,temperature_2m,wind_speed_10m,weather_code,precipitation"
     )
 
-    response = requests.get(url)
+    response = requests.get(url, timeout=5)
     data = response.json()
     currentWeather = data["current"]
-    logging.warning(currentWeather)
-
     weatherCode = currentWeather["weather_code"]
-    # humidity = data["relative_humidity_2m"]
-
 
     weather = {
         "timestamp": currentWeather["time"],
@@ -70,6 +69,14 @@ def send_to_rabbitmq(message):
     connection.close()
 
 if __name__ == "__main__":
-    print("Coletando dados...")
-    weather = fetch_weather()
-    send_to_rabbitmq(weather)
+    while True:
+        try:
+            weather = fetch_weather()
+            send_to_rabbitmq(weather)
+
+
+        except Exception as error:
+            print("Collector Error:", error)
+
+        print(f"⏳ Waiting {INTERVAL} seconds...\n")
+        time.sleep(INTERVAL)
