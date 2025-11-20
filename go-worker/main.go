@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"github.com/rabbitmq/amqp091-go"
 )
@@ -19,24 +21,19 @@ type WeatherMessage struct {
 }
 
 func main() {
-	connection, error := amqp091.Dial("amqp://teste:senha@localhost:5672/")
-	if error != nil {
-		log.Fatalf("RabbitMQ connection error: %v", error)
-	}
+	rabbitURL := getenv("RABBIT_URL", "amqp://teste:senha@rabbitmq:5672/")
+	queueName := getenv("QUEUE_NAME", "weather_queue")
+
+	connection := connectRabbit(rabbitURL)
+	channel := createChannel(connection)
+
 	defer connection.Close()
-
-	channel, error := connection.Channel()
-	if error != nil {
-		log.Fatalf("Open channel error: %v", error)
-	}
 	defer channel.Close()
-
-	queueName := "weather_queue"
 
 	messages, error := channel.Consume(
 		queueName,
 		"",
-		true,  
+		false,  
 		false, 
 		false,
 		false,
@@ -54,16 +51,112 @@ func main() {
 		for message := range messages {
 			fmt.Println("Message received!")
 
-			var weather WeatherMessage
-			error := json.Unmarshal(message.Body, &weather)
-			if error != nil {
-				fmt.Println("JSON Parse error:", error)
-				continue
-			}
-
-			fmt.Printf("⛅ Data received:\n%+v\n\n", weather)
+			handleMessage(message)
 		}
 	}()
 
 	<-forever
+}
+
+func connectRabbit(url string) *amqp091.Connection {
+    for {
+		connection, error := amqp091.Dial(url)
+        if error != nil {
+            log.Printf("RabbitMQ connection error: %s\nRetrying in 5 seconds...", error)
+            time.Sleep(5 * time.Second)
+            continue
+        }
+        log.Println("Connected to RabbitMQ!")
+        return connection
+    }
+}
+
+func createChannel(conn *amqp091.Connection) *amqp091.Channel {
+    channel, error := conn.Channel()
+    if error != nil {
+        log.Fatalf("Failed to open channel: %s", error)
+    }
+    return channel
+}
+
+func getenv(key, def string) string {
+    v := os.Getenv(key)
+    if v == "" {
+        return def
+    }
+    return v
+}
+
+func getRetryCount(headers amqp091.Table) int {
+    if headers == nil {
+        return 0
+    }
+    raw, ok := headers["x-retry"]
+    if !ok {
+        return 0
+    }
+    f, ok := raw.(int32)
+    if !ok {
+        return 0
+    }
+    return int(f)
+}
+
+func processWeather(weather WeatherMessage) error {
+
+
+	if err := validateWeatherMessage(weather); err != nil {
+		return err
+	}
+	fmt.Println(weather)
+
+
+    return nil 
+}
+
+func handleMessage(message amqp091.Delivery) {
+	var data WeatherMessage
+
+	error := json.Unmarshal(message.Body, &data)
+	if error != nil {
+		fmt.Println("JSON Parse error:", error)
+		message.Nack(false, false)
+		return
+	}
+
+	err := processWeather(data)
+	if err == nil {
+		message.Ack(false)
+		return
+	}
+
+	// FAIL CASE
+	retryCount := getRetryCount(message.Headers)
+
+
+
+	// TO DO: FIX INFINIT LOOP
+	if retryCount < 3 {
+		log.Printf("Retry %d for message...\n", retryCount+1)
+		// Return to Queue
+		message.Nack(false, true)
+		return
+	}
+
+	log.Println("Message failed too many times, discarding")
+	// Discard
+	message.Nack(false, false)
+}
+
+func validateWeatherMessage(weather WeatherMessage) error {
+    if weather.Timestamp == "" ||
+        weather.Location == "" ||
+        weather.Temperature == 0 ||
+        weather.Humidity == 0 ||
+        weather.WindSpeed == 0 ||
+        weather.Condition == "" {
+        return fmt.Errorf("missing required fields")
+    }
+
+    return nil
 }
