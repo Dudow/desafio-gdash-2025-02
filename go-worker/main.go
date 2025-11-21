@@ -51,7 +51,7 @@ func main() {
 		for message := range messages {
 			fmt.Println("Message received!")
 
-			handleMessage(message)
+			handleMessage(message, channel)
 		}
 	}()
 
@@ -114,7 +114,7 @@ func processWeather(weather WeatherMessage) error {
     return nil 
 }
 
-func handleMessage(message amqp091.Delivery) {
+func handleMessage(message amqp091.Delivery, channel *amqp091.Channel) {
 	var data WeatherMessage
 
 	error := json.Unmarshal(message.Body, &data)
@@ -133,19 +133,40 @@ func handleMessage(message amqp091.Delivery) {
 	// FAIL CASE
 	retryCount := getRetryCount(message.Headers)
 
-
-
-	// TO DO: FIX INFINIT LOOP
-	if retryCount < 3 {
-		log.Printf("Retry %d for message...\n", retryCount+1)
-		// Return to Queue
-		message.Nack(false, true)
+	if retryCount >= 3 {
+		log.Println("Message failed too many times, discarding")
+		message.Nack(false, false)
 		return
 	}
 
-	log.Println("Message failed too many times, discarding")
-	// Discard
-	message.Nack(false, false)
+	log.Printf("Retry %d for message...\n", retryCount+1)
+	republishMessage(message, channel, retryCount)
+
+}
+
+
+func republishMessage(message amqp091.Delivery, channel *amqp091.Channel, retryCount int) {
+	newHeaders := amqp091.Table{
+		"x-retry": int32(retryCount + 1),
+	}
+
+	error := channel.Publish(
+		"",
+		message.RoutingKey,
+		false,
+		false,
+		amqp091.Publishing{
+			ContentType: "application/json",
+			Body:        message.Body,
+			Headers:     newHeaders,
+		},
+	)
+
+	if error != nil {
+		log.Printf("Failed to republish: %v", error)
+		message.Nack(false, false)
+		return
+	}
 }
 
 func validateWeatherMessage(weather WeatherMessage) error {
