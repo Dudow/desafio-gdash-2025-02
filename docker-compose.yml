@@ -39,3 +39,18 @@ services:
       QUEUE_NAME: "weather_queue"
       RABBIT_URL: "amqp://teste:senha@rabbitmq:5672"
     restart: unless-stopped
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
