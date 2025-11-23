@@ -52,5 +52,20 @@ services:
     volumes:
       - mongodb_data:/data/db
 
+  api:
+    container_name: gdash_api
+    build:
+      context: ./nest-api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./nest-api/src:/usr/src/app/src
+      - ./nest-api/nest-cli.json:/usr/src/app/nest-cli.json
+      - ./nest-api/tsconfig.json:/usr/src/app/tsconfig.json
+      - ./nest-api/tsconfig.build.json:/usr/src/app/tsconfig.build.json
+    tty: true
+    stdin_open: true
+
 volumes:
   mongodb_data:
