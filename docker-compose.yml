@@ -23,7 +23,7 @@ services:
       QUEUE_NAME: "weather_queue"
       RABBIT_URL: "amqp://teste:senha@rabbitmq:5672"
       # TO DO: PASS IT TO 3600
-      INTERVAL: 5
+      INTERVAL: 60
     restart: always
     tty: true
     stdin_open: true
@@ -58,7 +58,7 @@ services:
       context: ./nest-api
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3004:3004"
     volumes:
       - ./nest-api/src:/usr/src/app/src
       - ./nest-api/nest-cli.json:/usr/src/app/nest-cli.json
