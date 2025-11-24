@@ -59,6 +59,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3004:3004"
+    env_file:
+      - "./nest-api/.env"
     volumes:
       - ./nest-api/src:/usr/src/app/src
       - ./nest-api/nest-cli.json:/usr/src/app/nest-cli.json

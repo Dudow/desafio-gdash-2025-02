@@ -19,5 +19,4 @@ RUN npm run build
 # Expose the port on which the app will run
 EXPOSE 3004
 
-# Start the server using PM2 in cluster mode
 CMD ["npm", "run", "start:prod"]
