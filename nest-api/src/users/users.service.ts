@@ -66,6 +66,11 @@ export class UsersService {
       throw new UnauthorizedException('Incorrect email or password');
     }
 
+    Object.assign(foundUser, {
+      password: undefined,
+      __v: undefined,
+    });
+
     return foundUser;
   }
 }
