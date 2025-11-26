@@ -15,14 +15,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { chartDataType } from "../use";
 
 interface TemperatureChartProps {
-  temperatureData: number[];
+  chartData: chartDataType;
 }
 
-export default function TemperatureChart({
-  temperatureData,
-}: TemperatureChartProps) {
+export default function TemperatureChart({ chartData }: TemperatureChartProps) {
   return (
     <Card>
       <CardHeader>
@@ -31,7 +30,7 @@ export default function TemperatureChart({
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={temperatureData}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="time" />
             <YAxis />
@@ -39,7 +38,7 @@ export default function TemperatureChart({
             <Legend />
             <Line
               type="monotone"
-              dataKey="temperature"
+              dataKey="temperatures"
               stroke="#ef4444"
               strokeWidth={2}
               name="Temperature (°C)"

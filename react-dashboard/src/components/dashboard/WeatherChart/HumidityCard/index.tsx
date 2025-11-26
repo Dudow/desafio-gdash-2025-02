@@ -15,12 +15,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { chartDataType } from "../use";
 
 interface HumidityCardProps {
-  humidityData: number[];
+  chartData: chartDataType;
 }
 
-export default function HumidityCard({ humidityData }: HumidityCardProps) {
+export default function HumidityCard({ chartData }: HumidityCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -29,7 +30,7 @@ export default function HumidityCard({ humidityData }: HumidityCardProps) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={humidityData}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="time" />
             <YAxis />
@@ -37,17 +38,17 @@ export default function HumidityCard({ humidityData }: HumidityCardProps) {
             <Legend />
             <Line
               type="monotone"
-              dataKey="humidity"
+              dataKey="humidities"
               stroke="#3b82f6"
               strokeWidth={2}
               name="Humidity (%)"
             />
             <Line
               type="monotone"
-              dataKey="wind"
+              dataKey="windSpeeds"
               stroke="#10b981"
               strokeWidth={2}
-              name="Wind (km/h)"
+              name="Wind Speed (km/h)"
             />
           </LineChart>
         </ResponsiveContainer>
