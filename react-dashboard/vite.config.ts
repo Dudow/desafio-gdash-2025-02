@@ -10,6 +10,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@contexts": path.resolve(__dirname, "./src/contexts"),
+      "@pages": path.resolve(__dirname, "./src/pages"),
     },
   },
 });
