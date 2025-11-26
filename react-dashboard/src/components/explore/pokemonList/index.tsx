@@ -6,7 +6,7 @@ import Pagination from "@/components/pagination";
 import { usePokemonList } from "./use";
 
 interface PokemonListProps {
-  setSelectedPokemon: Dispatch<SetStateAction<PokemonDetails | null>>;
+  setSelectedPokemon: Dispatch<SetStateAction<PokemonDetails | undefined>>;
   loading: boolean;
   pokemons: Pokemon[];
   page: number;
@@ -39,7 +39,7 @@ export default function PokemonList({
                 <Button
                   key={pokemon.name}
                   variant="outline"
-                  className="h-auto py-3"
+                  className="h-auto py-3 text-white"
                   onClick={() => loadPokemonDetails(pokemon.url)}
                 >
                   {pokemon.name}

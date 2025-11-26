@@ -3,7 +3,7 @@ import axios from "axios";
 import { Dispatch, SetStateAction } from "react";
 
 interface usePokemonListProps {
-  setSelectedPokemon: Dispatch<SetStateAction<PokemonDetails | null>>;
+  setSelectedPokemon: Dispatch<SetStateAction<PokemonDetails | undefined>>;
 }
 
 export const usePokemonList = ({ setSelectedPokemon }: usePokemonListProps) => {
