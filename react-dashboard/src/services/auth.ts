@@ -4,11 +4,19 @@ import { User } from "@/types/user";
 
 export const authService = {
   async login(email: string, password: string): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>("/auth/login", {
-      email,
-      password,
-    });
-    return response.data;
+    try {
+      const response = await api.post<AuthResponse>("/auth/login", {
+        email,
+        password,
+      });
+
+      return response.data;
+    } catch (error: any) {
+      throw {
+        message: error.response?.data?.message || "Login Error",
+        status: error.response?.status,
+      };
+    }
   },
 
   async register(data: {
