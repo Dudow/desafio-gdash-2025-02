@@ -22,18 +22,20 @@ export default function WeatherTable({
         size="sm"
         onClick={() => setPage((p) => Math.max(1, p - 1))}
         disabled={page === 1 || loading}
+        className="text-white"
       >
         <ChevronLeft className="w-4 h-4 mr-2" />
         Previous
       </Button>
       <span className="text-sm text-gray-600">
-        Page {page}/{totalPages}
+        Page {page + 1}/{totalPages + 1}
       </span>
       <Button
         variant="outline"
         size="sm"
         onClick={() => setPage((page) => Math.min(totalPages, page + 1))}
         disabled={page === totalPages || loading}
+        className="text-white"
       >
         Next
         <ChevronRight className="w-4 h-4 ml-2" />
