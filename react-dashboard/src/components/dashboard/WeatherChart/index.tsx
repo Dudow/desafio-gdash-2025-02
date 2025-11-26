@@ -16,7 +16,7 @@ export default function WeatherChart() {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center">Carregando gráfico...</div>
+          <div className="text-center">Loading...</div>
         </CardContent>
       </Card>
     );
