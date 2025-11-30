@@ -11,8 +11,15 @@ import { UsersRepositoryInterface } from './users.repository.interface';
 import { LoginUserDTO } from 'src/common/dtos/login-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { UserDocument } from './users.schema';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 type UserWithoutPassword = Omit<UserDocument, 'password'>;
+
+export interface UserLoginResponse {
+  user: UserWithoutPassword;
+  jwtToken: string;
+}
 
 @Injectable()
 export class UsersService {
@@ -20,6 +27,8 @@ export class UsersService {
     @Inject('UsersRepository')
     private readonly usersRepository: UsersRepositoryInterface,
     private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(createUserDTO: CreateUserDTO): Promise<UserWithoutPassword> {
@@ -49,7 +58,7 @@ export class UsersService {
     return user;
   }
 
-  async login(loginUserDTO: LoginUserDTO): Promise<UserWithoutPassword> {
+  async login(loginUserDTO: LoginUserDTO): Promise<UserLoginResponse> {
     const lowercasedEmail = loginUserDTO.email.toLowerCase();
 
     const foundUser = await this.usersRepository.findByEmail(lowercasedEmail);
@@ -72,6 +81,20 @@ export class UsersService {
       __v: undefined,
     });
 
-    return foundUser;
+    const jwtToken = await this.jwtService.signAsync(
+      {
+        sub: {
+          id: foundUser._id,
+        },
+      },
+      {
+        secret:
+          this.configService.get<string>('JWT_SECRET') ??
+          'GDASH_SECRET_PASSWORD',
+        expiresIn: '1d',
+      },
+    );
+
+    return { user: foundUser, jwtToken };
   }
 }

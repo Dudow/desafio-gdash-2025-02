@@ -5,6 +5,8 @@ import { UsersRepository } from './users.repository';
 import { usersProviders } from './users.provider';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersService } from './users.service';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   providers: [
@@ -15,7 +17,7 @@ import { UsersService } from './users.service';
       useClass: UsersRepository,
     },
   ],
-  imports: [CommonModule, AuthModule],
+  imports: [CommonModule, AuthModule, JwtModule, ConfigModule],
   exports: [
     ...usersProviders,
     {
