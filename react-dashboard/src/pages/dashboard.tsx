@@ -33,7 +33,7 @@ export default function Dashboard() {
       setCurrentWeather(weatherData);
       setInsights(aiInsights);
     } catch (error: any) {
-      toast("Erro ao carregar dados", {
+      toast("Loading error", {
         description: error.message,
       });
     } finally {
@@ -50,11 +50,11 @@ export default function Dashboard() {
           : await weatherService.exportToXLSX();
 
       downloadBlob(blob, `weather-data.${format}`);
-      toast("Exportação concluída", {
-        description: `Arquivo ${format.toUpperCase()} baixado com sucesso.`,
+      toast("Exported successfully", {
+        description: `File ${format.toUpperCase()} downloaded successfully.`,
       });
     } catch (error: any) {
-      toast("Erro na exportação", {
+      toast("Export error", {
         description: error.message,
       });
     } finally {
