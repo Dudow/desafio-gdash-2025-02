@@ -6,9 +6,9 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDTO } from 'src/common/dtos/create-user.dto';
+import { CreateUserDTO } from 'src/common/dtos/user/create-user.dto';
 import { UsersRepositoryInterface } from './users.repository.interface';
-import { LoginUserDTO } from 'src/common/dtos/login-user.dto';
+import { LoginUserDTO } from 'src/common/dtos/user/login-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { UserDocument } from './users.schema';
 import { JwtService } from '@nestjs/jwt';

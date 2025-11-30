@@ -1,5 +1,5 @@
-import { CreateUserDTO } from 'src/common/dtos/create-user.dto';
-import { UpdateUserDTO } from 'src/common/dtos/update-user.dto';
+import { CreateUserDTO } from 'src/common/dtos/user/create-user.dto';
+import { UpdateUserDTO } from 'src/common/dtos/user/update-user.dto';
 import { UserDocument } from './users.schema';
 
 export interface UsersRepositoryInterface {
