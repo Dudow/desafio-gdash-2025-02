@@ -28,16 +28,9 @@ export default function LoginPage() {
     try {
       await login(email, password);
 
-      toast("You logged in!", {
-        description: "Sunday, December 03, 2023 at 9:00 AM",
-        action: {
-          label: "Undo",
-          onClick: () => console.log("Undo"),
-        },
-      });
+      toast("You logged in!");
       navigate("/");
     } catch (error: any) {
-      console.log("deu erro", error);
       toast("Login error", {
         description: error.response?.data?.message || "Check your credentials.",
       });
