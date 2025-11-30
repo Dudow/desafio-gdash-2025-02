@@ -38,6 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = () => {
     authService.logout();
     setUser(null);
+    // TO DO: redirect to login
   };
 
   return (

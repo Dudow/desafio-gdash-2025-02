@@ -5,7 +5,7 @@ import { User } from "@/types/user";
 export const authService = {
   async login(email: string, password: string): Promise<AuthResponse> {
     try {
-      const response = await api.post<AuthResponse>("/auth/login", {
+      const response = await api.post<AuthResponse>("/users/login", {
         email,
         password,
       });
@@ -24,7 +24,7 @@ export const authService = {
     password: string;
     name: string;
   }): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>("/auth/register", data);
+    const response = await api.post<AuthResponse>("/users", data);
     return response.data;
   },
 
