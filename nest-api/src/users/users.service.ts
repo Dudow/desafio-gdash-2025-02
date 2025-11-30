@@ -34,6 +34,7 @@ export class UsersService {
     const user = await this.usersRepository.create({
       ...createUserDTO,
       email: lowercasedEmail,
+      password: await this.authService.hashPassword(createUserDTO.password),
     });
 
     if (!user) {
@@ -57,7 +58,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    const isSamePassword = this.authService.verifyPassword(
+    const isSamePassword = await this.authService.verifyPassword(
       loginUserDTO.password,
       foundUser.password,
     );
