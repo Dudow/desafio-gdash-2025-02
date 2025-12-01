@@ -7,6 +7,8 @@ import LoginPage from "@pages/login";
 import { Toaster } from "@components/ui/sonner";
 import { AppLayoutLogged } from "@/layouts/layoutLogged";
 import { AppLayoutDefault } from "@/layouts/layoutDefault";
+import Users from "./pages/users";
+import Dashboard from "./pages/dashboard";
 
 function App() {
   return (
@@ -27,9 +29,32 @@ function App() {
               </ProtectedRouteHandler>
             }
           >
-            <Route path="/users" element={<div>Users</div>} />
+            <Route
+              path="/users"
+              element={
+                <div>
+                  <Users />
+                </div>
+              }
+            />
 
-            <Route path="/" element={<div>Dashboard</div>} />
+            <Route
+              path="/"
+              element={
+                <div>
+                  <Dashboard />
+                </div>
+              }
+            />
+
+            <Route
+              path="/explore"
+              element={
+                <div>
+                  <ExplorePage />
+                </div>
+              }
+            />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
