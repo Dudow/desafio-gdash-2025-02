@@ -351,10 +351,10 @@ O Pull Request deve conter:
 - [x] Python envia dados para a fila
 - [x] Worker Go consome a fila e envia para a API NestJS
 - [ ] API NestJS:
-  - [ ] Armazena logs de clima em MongoDB
-  - [ ] Exponde endpoints para listar dados
+  - [x] Armazena logs de clima em MongoDB
+  - [x] Expõe endpoints para listar dados
   - [ ] Gera/retorna insights de IA (endpoint próprio)
-  - [ ] Exporta dados em CSV/XLSX
+  - [x] Exporta dados em CSV/XLSX
   - [ ] Implementa CRUD de usuários + autenticação
   - [ ] (Opcional) Integração com API pública paginada
 - [ ] Frontend React + Vite + Tailwind + shadcn/ui:
