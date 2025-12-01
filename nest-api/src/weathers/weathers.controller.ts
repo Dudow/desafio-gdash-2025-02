@@ -52,4 +52,20 @@ export class WeathersController {
 
     generatedCsv.end();
   }
+
+  @Get('/export/xlsx')
+  async exportXLSX(@Res() res: Response) {
+    const generatedXlsx = await this.weathersService.exportXlsx();
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=weather-data.xlsx',
+    );
+
+    return res.send(generatedXlsx);
+  }
 }

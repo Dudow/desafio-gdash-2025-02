@@ -3,6 +3,7 @@ import { WeathersRepositoryInterface } from './weathers.repository.interface';
 import { CreateWeatherDTO } from 'src/common/dtos/weather/create-weather.dto';
 import { WeatherDocument } from './weathers.schema';
 import { Stringifier, stringify } from 'csv-stringify';
+import * as XLSX from 'xlsx';
 
 @Injectable()
 export class WeathersService {
@@ -48,5 +49,29 @@ export class WeathersService {
     });
 
     return generatedCsv;
+  }
+
+  async exportXlsx(): Promise<undefined> {
+    const allWeathers = await this.weathersRepository.findAll();
+
+    const data = allWeathers.map((weather) => ({
+      ID: weather._id.toString(),
+      Location: weather.location,
+      Temperature: weather.temperature,
+      Humidity: weather.humidity,
+      'Wind Speed': weather.windSpeed,
+      Condition: weather.condition,
+      Precipitation: weather.precipitation,
+      Date: weather.timestamp,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Weather Data');
+
+    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+    return buffer;
   }
 }
