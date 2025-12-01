@@ -25,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
       provide: 'WeathersRepository',
       useClass: WeathersRepository,
     },
+    WeathersService,
   ],
 })
 export class WeathersModule {}
