@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, CloudRain, Droplets, Wind, TrendingUp } from "lucide-react";
+import { CloudRain, Droplets, Wind, TrendingUp } from "lucide-react";
 import WeatherChart from "../components/dashboard/WeatherChart";
 import WeatherTable from "../components/dashboard/WeatherTable";
 import AIInsightsCard from "../components/dashboard/AIInsightsCard";
-import { downloadBlob } from "../utils/exportData";
 import { WeatherData } from "@/types/weather";
 import { AIInsight } from "@/types/ai";
 import { weatherService } from "@/services/weather";
@@ -18,7 +16,6 @@ export default function Dashboard() {
   );
   const [insights, setInsights] = useState<AIInsight[]>([]);
   const [loading, setLoading] = useState(true);
-  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
@@ -38,27 +35,6 @@ export default function Dashboard() {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleExport = async (format: "csv" | "xlsx") => {
-    setExporting(true);
-    try {
-      const blob =
-        format === "csv"
-          ? await weatherService.exportToCSV()
-          : await weatherService.exportToXLSX();
-
-      downloadBlob(blob, `weather-data.${format}`);
-      toast("Exported successfully", {
-        description: `File ${format.toUpperCase()} downloaded successfully.`,
-      });
-    } catch (error: any) {
-      toast("Export error", {
-        description: error.message,
-      });
-    } finally {
-      setExporting(false);
     }
   };
 
@@ -86,16 +62,6 @@ export default function Dashboard() {
               {currentWeather?.timestamp &&
                 new Date(currentWeather.timestamp).toLocaleString("pt-BR")}
             </p>
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => handleExport("csv")} disabled={exporting}>
-              <Download className="w-4 h-4 mr-2" />
-              Export as CSV
-            </Button>
-            <Button onClick={() => handleExport("xlsx")} disabled={exporting}>
-              <Download className="w-4 h-4 mr-2" />
-              Export as XLSX
-            </Button>
           </div>
         </div>
 
