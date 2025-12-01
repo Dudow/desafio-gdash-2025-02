@@ -97,4 +97,10 @@ export class UsersService {
 
     return { user: foundUser, jwtToken };
   }
+
+  async findAll(): Promise<UserDocument[]> {
+    const allUsers = await this.usersRepository.findAll();
+
+    return allUsers;
+  }
 }

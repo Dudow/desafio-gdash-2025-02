@@ -23,8 +23,10 @@ export class UsersRepository implements UsersRepositoryInterface {
     throw new Error('Method not implemented.');
   }
 
-  findAll(): Promise<UserDocument[]> {
-    throw new Error('Method not implemented.');
+  async findAll(): Promise<UserDocument[]> {
+    const allUsers = await this.UserDocument.find();
+
+    return allUsers;
   }
 
   async find(id: string): Promise<UserDocument | null> {

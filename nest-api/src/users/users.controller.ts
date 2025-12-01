@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateUserDTO } from 'src/common/dtos/user/create-user.dto';
 import { UsersService } from './users.service';
 import { LoginUserDTO } from 'src/common/dtos/user/login-user.dto';
@@ -12,6 +12,11 @@ export class UsersController {
     const result = await this.usersService.create(createUserDTO);
 
     return result;
+  }
+
+  @Get()
+  findAll() {
+    return this.usersService.findAll();
   }
 
   @Post('/login')
