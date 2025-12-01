@@ -136,7 +136,7 @@ export default function Users() {
                       Loading...
                     </TableCell>
                   </TableRow>
-                ) : users.length === 0 ? (
+                ) : (users ?? []).length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center">
                       No user found
