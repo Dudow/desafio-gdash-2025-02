@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -15,13 +17,17 @@ type WeatherMessage struct {
 	Location    string  `json:"location"`
 	Temperature float64 `json:"temperature"`
 	Humidity    int     `json:"humidity"`
-	WindSpeed   float64 `json:"wind_speed"`
-	Condition   string  `json:"condition"`
+	WindSpeed   float64 `json:"windSpeed"`
 	Precipitation float64 `json:"precipitation"`
+	Condition   string  `json:"condition"`
 }
 
 func main() {
 	rabbitURL := getenv("RABBIT_URL", "amqp://teste:senha@rabbitmq:5672/")
+	// TO DO: PASS IT TO ENV
+	// apiURL := getenv("RABBIT_URL", "http://localhost:3004/")
+	// WEATHER_API_TOKEN := "Jn~TYLH).la"
+
 	queueName := getenv("QUEUE_NAME", "weather_queue")
 
 	connection := connectRabbit(rabbitURL)
@@ -49,8 +55,6 @@ func main() {
 
 	go func() {
 		for message := range messages {
-			fmt.Println("Message received!")
-
 			handleMessage(message, channel)
 		}
 	}()
@@ -79,6 +83,7 @@ func createChannel(conn *amqp091.Connection) *amqp091.Channel {
     return channel
 }
 
+// TO DO: REALLY USE ENV
 func getenv(key, def string) string {
     v := os.Getenv(key)
     if v == "" {
@@ -103,8 +108,6 @@ func getRetryCount(headers amqp091.Table) int {
 }
 
 func processWeather(weather WeatherMessage) error {
-
-
 	if err := validateWeatherMessage(weather); err != nil {
 		return err
 	}
@@ -117,16 +120,24 @@ func processWeather(weather WeatherMessage) error {
 func handleMessage(message amqp091.Delivery, channel *amqp091.Channel) {
 	var data WeatherMessage
 
+	headers := map[string]string{
+		"Content-Type": "application/json",
+		"WEATHER_API_TOKEN": "Jn~TYLH).la",
+	}
+
 	error := json.Unmarshal(message.Body, &data)
+
 	if error != nil {
 		fmt.Println("JSON Parse error:", error)
 		message.Nack(false, false)
 		return
 	}
 
+	// SUCCESS CASE
 	err := processWeather(data)
 	if err == nil {
 		message.Ack(false)
+		sendPost("http://api:3004/weathers/register-weather", data, headers)
 		return
 	}
 
@@ -141,9 +152,7 @@ func handleMessage(message amqp091.Delivery, channel *amqp091.Channel) {
 
 	log.Printf("Retry %d for message...\n", retryCount+1)
 	republishMessage(message, channel, retryCount)
-
 }
-
 
 func republishMessage(message amqp091.Delivery, channel *amqp091.Channel, retryCount int) {
 	newHeaders := amqp091.Table{
@@ -180,4 +189,33 @@ func validateWeatherMessage(weather WeatherMessage) error {
     }
 
     return nil
+}
+
+func sendPost(url string, data WeatherMessage, headers map[string]string) (*http.Response, error) {
+
+	jsonData, error := json.Marshal(data)
+	if error != nil {
+		return nil, fmt.Errorf("failed to marshal json: %w", error)
+	}
+
+	req, error := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if error != nil {
+		return nil, fmt.Errorf("failed to create request: %w", error)
+	}
+
+	// Add headers
+	req.Header.Set("Content-Type", "application/json")
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	client := &http.Client{}
+	res, error := client.Do(req)
+
+
+	if error != nil {
+		return nil, fmt.Errorf("failed to send request: %w", error)
+	}
+
+	return res, nil
 }

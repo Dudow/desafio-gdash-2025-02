@@ -40,7 +40,7 @@ def fetch_weather():
         "location": LOCATION_NAME,
         "temperature": currentWeather["temperature_2m"],
         "humidity": currentWeather["relative_humidity_2m"],
-        "wind_speed": currentWeather["wind_speed_10m"],
+        "windSpeed": currentWeather["wind_speed_10m"],
         "precipitation": currentWeather["precipitation"],
         "condition": WEATHER_CODES_ENUM.get(weatherCode, "Unknown")
     }
