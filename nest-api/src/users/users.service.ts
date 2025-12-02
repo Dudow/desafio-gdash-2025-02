@@ -115,4 +115,35 @@ export class UsersService {
       totalPages,
     };
   }
+
+  async createDefaultUser(
+    createDefaultUserDTO: Omit<CreateUserDTO, 'name'>,
+  ): Promise<UserWithoutPassword> {
+    const lowercasedEmail = createDefaultUserDTO.email.toLowerCase();
+
+    const userExists = await this.usersRepository.findByEmail(lowercasedEmail);
+
+    if (userExists) {
+      return userExists;
+    }
+
+    const user = await this.usersRepository.create({
+      name: 'Default User',
+      email: lowercasedEmail,
+      password: await this.authService.hashPassword(
+        createDefaultUserDTO.password,
+      ),
+    });
+
+    if (!user) {
+      throw new InternalServerErrorException('Unable to create default user');
+    }
+
+    Object.assign(user, {
+      password: undefined,
+      __v: undefined,
+    });
+
+    return user;
+  }
 }
