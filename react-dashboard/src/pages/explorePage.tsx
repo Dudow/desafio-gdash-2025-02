@@ -29,8 +29,8 @@ export default function ExplorePage() {
     PokemonDetails | undefined
   >(undefined);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(66);
-  const [totalPokemons, setTotalPokemons] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPokemons, setTotalPokemons] = useState(1);
 
   const limit = 20;
 

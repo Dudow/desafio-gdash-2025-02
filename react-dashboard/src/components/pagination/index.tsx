@@ -2,19 +2,19 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SetStateAction } from "react";
 
-interface WeatherTableProps {
+interface PaginationProps {
   page: number;
   setPage: (value: SetStateAction<number>) => void;
   totalPages: number;
   loading: boolean;
 }
 
-export default function WeatherTable({
+export default function Pagination({
   page,
   setPage,
   loading = true,
   totalPages,
-}: WeatherTableProps) {
+}: PaginationProps) {
   return (
     <div className="flex items-center justify-between mt-4">
       <Button
@@ -22,20 +22,18 @@ export default function WeatherTable({
         size="sm"
         onClick={() => setPage((p) => Math.max(1, p - 1))}
         disabled={page === 1 || loading}
-        className="text-white"
       >
         <ChevronLeft className="w-4 h-4 mr-2" />
         Previous
       </Button>
       <span className="text-sm text-gray-600">
-        Page {page + 1}/{totalPages + 1}
+        Page {page}/{totalPages}
       </span>
       <Button
         variant="outline"
         size="sm"
         onClick={() => setPage((page) => Math.min(totalPages, page + 1))}
         disabled={page === totalPages || loading}
-        className="text-white"
       >
         Next
         <ChevronRight className="w-4 h-4 ml-2" />

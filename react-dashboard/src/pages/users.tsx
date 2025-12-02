@@ -165,7 +165,7 @@ export default function Users() {
                             size="sm"
                             onClick={() => handleDeleteUser(user.id)}
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4 text-white" />
                           </Button>
                         </div>
                       </TableCell>
@@ -175,7 +175,7 @@ export default function Users() {
               </TableBody>
             </Table>
 
-            {/* Pagination */}
+            {/* TO DO: ADD CORRECT PAGINATION */}
             <div className="flex items-center justify-between mt-4">
               <Button
                 variant="outline"
