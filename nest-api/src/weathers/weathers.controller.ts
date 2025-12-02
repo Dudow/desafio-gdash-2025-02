@@ -6,11 +6,13 @@ import {
   Req,
   UnauthorizedException,
   Res,
+  Query,
 } from '@nestjs/common';
 import { WeathersService } from './weathers.service';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { CreateWeatherDTO } from 'src/common/dtos/weather/create-weather.dto';
+import { CreateWeatherDTO } from 'src/weathers/dtos/create-weather.dto';
+import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
 
 @Controller('weathers')
 export class WeathersController {
@@ -34,8 +36,8 @@ export class WeathersController {
   }
 
   @Get()
-  findAll() {
-    return this.weathersService.findAll();
+  findAll(@Query() filters: SearchResultDTO) {
+    return this.weathersService.findAll(filters);
   }
 
   @Get('/export/csv')
@@ -48,7 +50,7 @@ export class WeathersController {
 
     generatedCsv.pipe(res);
 
-    allWeathers.forEach((row) => generatedCsv.write(row));
+    allWeathers.data.forEach((row) => generatedCsv.write(row));
 
     generatedCsv.end();
   }

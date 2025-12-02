@@ -1,5 +1,7 @@
-import { CreateWeatherDTO } from 'src/common/dtos/weather/create-weather.dto';
+import { CreateWeatherDTO } from 'src/weathers/dtos/create-weather.dto';
 import { WeatherDocument } from './weathers.schema';
+import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
+import { PaginatedResponse } from 'src/common/interfaces/paginatedResponse';
 
 export type CreateWeatherDTOWithTimestampParsed = Omit<
   CreateWeatherDTO,
@@ -12,6 +14,8 @@ export interface WeathersRepositoryInterface {
   create(
     createWeatherDTO: CreateWeatherDTOWithTimestampParsed,
   ): Promise<WeatherDocument | null>;
-  findAll(): Promise<WeatherDocument[]>;
+  findAll(
+    filters?: SearchResultDTO,
+  ): Promise<PaginatedResponse<WeatherDocument>>;
   delete(id: string): Promise<void>;
 }

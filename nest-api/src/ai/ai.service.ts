@@ -30,7 +30,7 @@ export class AiService {
           content: [
             {
               type: 'input_text',
-              text: JSON.stringify(weathers.slice(-5)),
+              text: JSON.stringify(weathers.data.slice(-5)),
             },
           ],
         },

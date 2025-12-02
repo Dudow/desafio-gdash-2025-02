@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { WeathersRepositoryInterface } from './weathers.repository.interface';
-import { CreateWeatherDTO } from 'src/common/dtos/weather/create-weather.dto';
+import { CreateWeatherDTO } from 'src/weathers/dtos/create-weather.dto';
 import { WeatherDocument } from './weathers.schema';
 import { Stringifier, stringify } from 'csv-stringify';
 import * as XLSX from 'xlsx';
+import { PaginatedResponse } from 'src/common/interfaces/paginatedResponse';
+import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
 
 @Injectable()
 export class WeathersService {
@@ -23,16 +25,40 @@ export class WeathersService {
     return;
   }
 
-  async findAll(): Promise<WeatherDocument[]> {
-    const allWeathers = await this.weathersRepository.findAll();
+  async findAll(
+    filters?: SearchResultDTO,
+  ): Promise<PaginatedResponse<WeatherDocument>> {
+    const shouldPaginate = filters?.page || filters?.limit;
 
-    return allWeathers;
+    if (!shouldPaginate) {
+      const { data } = await this.weathersRepository.findAll();
+      return {
+        data,
+        total: data.length,
+        page: 1,
+        totalPages: 1,
+      };
+    }
+
+    const page = filters.page ?? 1;
+    const limit = filters.limit ?? 20;
+
+    const { data } = await this.weathersRepository.findAll({ page, limit });
+    const total = data.length;
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+
+    return {
+      data: data,
+      total,
+      page,
+      totalPages,
+    };
   }
 
   async exportCsv(): Promise<Stringifier> {
     const allWeathers = await this.weathersRepository.findAll();
 
-    const generatedCsv = stringify(allWeathers, {
+    const generatedCsv = stringify(allWeathers.data, {
       header: true,
       columns: {
         _id: 'ID',
@@ -54,7 +80,7 @@ export class WeathersService {
   async exportXlsx(): Promise<undefined> {
     const allWeathers = await this.weathersRepository.findAll();
 
-    const data = allWeathers.map((weather) => ({
+    const data = allWeathers.data.map((weather) => ({
       ID: weather._id.toString(),
       Location: weather.location,
       Temperature: weather.temperature,

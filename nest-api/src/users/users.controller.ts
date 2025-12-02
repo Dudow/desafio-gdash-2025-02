@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateUserDTO } from 'src/common/dtos/user/create-user.dto';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { CreateUserDTO } from 'src/users/dtos/create-user.dto';
 import { UsersService } from './users.service';
-import { LoginUserDTO } from 'src/common/dtos/user/login-user.dto';
+import { LoginUserDTO } from 'src/users/dtos/login-user.dto';
+import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
 
 @Controller('users')
 export class UsersController {
@@ -15,8 +16,8 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() filters: SearchResultDTO) {
+    return this.usersService.findAll(filters);
   }
 
   @Post('/login')

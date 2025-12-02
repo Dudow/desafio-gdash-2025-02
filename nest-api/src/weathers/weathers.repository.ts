@@ -5,6 +5,8 @@ import {
   WeathersRepositoryInterface,
 } from './weathers.repository.interface';
 import { WeatherDocument } from './weathers.schema';
+import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
+import { PaginatedResponse } from 'src/common/interfaces/paginatedResponse';
 
 @Injectable()
 export class WeathersRepository implements WeathersRepositoryInterface {
@@ -22,10 +24,36 @@ export class WeathersRepository implements WeathersRepositoryInterface {
     return newWeather;
   }
 
-  findAll(): Promise<WeatherDocument[]> {
-    const allWeathers = this.weatherModel.find();
+  async findAll(
+    filters: SearchResultDTO,
+  ): Promise<PaginatedResponse<WeatherDocument>> {
+    const shouldPaginate = filters?.page || filters?.limit;
 
-    return allWeathers;
+    if (!shouldPaginate) {
+      const data = await this.weatherModel.find();
+      return {
+        data,
+        total: data.length,
+        page: 1,
+        totalPages: 1,
+      };
+    }
+
+    const { page = 1, limit = 10 } = filters;
+    const skip = (page - 1) * limit;
+
+    const data = await this.weatherModel
+      .find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return {
+      data,
+      total: data.length,
+      page: 1,
+      totalPages: 1,
+    };
   }
 
   delete(_id: string): Promise<void> {

@@ -6,13 +6,15 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDTO } from 'src/common/dtos/user/create-user.dto';
+import { CreateUserDTO } from 'src/users/dtos/create-user.dto';
 import { UsersRepositoryInterface } from './users.repository.interface';
-import { LoginUserDTO } from 'src/common/dtos/user/login-user.dto';
+import { LoginUserDTO } from 'src/users/dtos/login-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { UserDocument } from './users.schema';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { PaginatedResponse } from 'src/common/interfaces/paginatedResponse';
+import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
 
 type UserWithoutPassword = Omit<UserDocument, 'password'>;
 
@@ -98,9 +100,19 @@ export class UsersService {
     return { user: foundUser, jwtToken };
   }
 
-  async findAll(): Promise<UserDocument[]> {
-    const allUsers = await this.usersRepository.findAll();
+  async findAll({
+    limit,
+    page,
+  }: SearchResultDTO): Promise<PaginatedResponse<UserDocument>> {
+    const allUsers = await this.usersRepository.findAll({ limit, page });
 
-    return allUsers;
+    const totalPages = Math.ceil(allUsers.data.length / limit) || 1;
+
+    return {
+      data: allUsers.data,
+      total: allUsers.data.length,
+      page,
+      totalPages,
+    };
   }
 }
