@@ -21,8 +21,20 @@ export class UsersRepository implements UsersRepositoryInterface {
     return newUser;
   }
 
-  update(_updateUserDTO: UpdateUserDTO): Promise<UserDocument | null> {
-    throw new Error('Method not implemented.');
+  async update(
+    id: string,
+    updateUserDTO: UpdateUserDTO,
+  ): Promise<UserDocument | null> {
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      id,
+      updateUserDTO,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    return updatedUser;
   }
 
   async findAll(
@@ -71,7 +83,11 @@ export class UsersRepository implements UsersRepositoryInterface {
     return user;
   }
 
-  delete(_id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async findById(id: string): Promise<UserDocument | null> {
+    return await this.userModel.findById(id);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.userModel.findByIdAndDelete(id);
   }
 }

@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PaginatedResponse } from 'src/common/interfaces/paginatedResponse';
 import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
+import { UpdateUserDTO } from './dtos/update-user.dto';
 
 type UserWithoutPassword = Omit<UserDocument, 'password'>;
 
@@ -58,6 +59,46 @@ export class UsersService {
     });
 
     return user;
+  }
+
+  async update(
+    id: string,
+    updateUserDTO: UpdateUserDTO,
+  ): Promise<UserWithoutPassword> {
+    const user = await this.usersRepository.findById(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (updateUserDTO.email) {
+      const lowercasedEmail = updateUserDTO.email.toLowerCase();
+
+      const existingUser =
+        await this.usersRepository.findByEmail(lowercasedEmail);
+
+      if (existingUser && !existingUser._id.equals(user._id)) {
+        throw new ConflictException('Email already in use by another user');
+      }
+
+      updateUserDTO.email = lowercasedEmail;
+    }
+
+    const updatedUser = await this.usersRepository.update(
+      user._id.toString(),
+      updateUserDTO,
+    );
+
+    if (!updatedUser) {
+      throw new InternalServerErrorException('Unable to update user');
+    }
+
+    Object.assign(updatedUser, {
+      password: undefined,
+      __v: undefined,
+    });
+
+    return updatedUser;
   }
 
   async login(loginUserDTO: LoginUserDTO): Promise<UserLoginResponse> {
@@ -151,5 +192,9 @@ export class UsersService {
     const foundUser = await this.usersRepository.find(email);
 
     return foundUser;
+  }
+
+  async delete(id: string) {
+    await this.usersRepository.delete(id);
   }
 }
