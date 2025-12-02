@@ -56,6 +56,12 @@ export class WeathersRepository implements WeathersRepositoryInterface {
     };
   }
 
+  async getCurrent(): Promise<WeatherDocument> {
+    const data = await this.weatherModel.findOne().sort({ createdAt: -1 });
+
+    return data ?? ({} as WeatherDocument);
+  }
+
   delete(_id: string): Promise<void> {
     throw new Error('Method not implemented.');
   }

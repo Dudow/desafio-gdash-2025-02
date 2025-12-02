@@ -6,6 +6,5 @@ export interface WeatherData {
   windSpeed: number;
   condition: string;
   timestamp: string;
-  feelsLike?: number;
-  pressure?: number;
+  precipitation: number;
 }

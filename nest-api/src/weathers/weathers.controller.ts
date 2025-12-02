@@ -43,6 +43,11 @@ export class WeathersController {
     return this.weathersService.findAll(filters);
   }
 
+  @Get('/current')
+  getCurrent() {
+    return this.weathersService.getCurrent();
+  }
+
   @Get('/export/csv')
   async exportCSV(@Res() res: Response) {
     const allWeathers = await this.weathersService.findAll();

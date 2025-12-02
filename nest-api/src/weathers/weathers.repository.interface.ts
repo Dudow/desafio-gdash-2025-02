@@ -17,5 +17,6 @@ export interface WeathersRepositoryInterface {
   findAll(
     filters?: SearchResultDTO,
   ): Promise<PaginatedResponse<WeatherDocument>>;
+  getCurrent(): Promise<WeatherDocument>;
   delete(id: string): Promise<void>;
 }

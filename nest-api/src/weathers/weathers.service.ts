@@ -55,6 +55,12 @@ export class WeathersService {
     };
   }
 
+  async getCurrent(): Promise<WeatherDocument> {
+    const data = await this.weathersRepository.getCurrent();
+
+    return data;
+  }
+
   async exportCsv(): Promise<Stringifier> {
     const allWeathers = await this.weathersRepository.findAll();
 
