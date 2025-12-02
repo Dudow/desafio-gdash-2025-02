@@ -355,7 +355,7 @@ O Pull Request deve conter:
   - [x] Expõe endpoints para listar dados
   - [x] Gera/retorna insights de IA (endpoint próprio)
   - [x] Exporta dados em CSV/XLSX
-  - [ ] Implementa CRUD de usuários + autenticação
+  - [x] Implementa CRUD de usuários + autenticação
   - [ ] (Opcional) Integração com API pública paginada
 - [ ] Frontend React + Vite + Tailwind + shadcn/ui:
   - [ ] Dashboard de clima com dados reais
