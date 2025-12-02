@@ -7,19 +7,14 @@ import WeatherChart from "../components/dashboard/WeatherChart";
 import WeatherTable from "../components/dashboard/WeatherTable";
 import AIInsightsCard from "../components/dashboard/AIInsightsCard";
 import { WeatherData } from "@/types/weather";
-import { AIInsight } from "@/types/ai";
 import { weatherService } from "@/services/weather";
 
 export default function Dashboard() {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
     null
   );
-  const [insights, setInsights] = useState<AIInsight[]>([]);
+  const [insights, setInsights] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
 
   const loadDashboardData = async () => {
     try {
@@ -37,6 +32,10 @@ export default function Dashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
 
   if (loading) {
     return (
@@ -77,7 +76,7 @@ export default function Dashboard() {
                 {currentWeather?.temperature.toFixed(1)}°C
               </div>
               <p className="text-xs text-muted-foreground">
-                Wind chill: {currentWeather?.feelsLike?.toFixed(1)}°C
+                Precipitation: {currentWeather?.precipitation?.toFixed(1)}
               </p>
             </CardContent>
           </Card>
