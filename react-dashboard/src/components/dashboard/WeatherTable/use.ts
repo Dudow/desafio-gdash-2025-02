@@ -1,6 +1,6 @@
 import { weatherService } from "@/services/weather";
 import { WeatherData } from "@/types/weather";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export const useWeatherTable = () => {
   const [data, setData] = useState<WeatherData[]>([]);
@@ -8,7 +8,7 @@ export const useWeatherTable = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const loadTableData = async () => {
+  const loadTableData = useCallback(async () => {
     setLoading(true);
     try {
       const response = await weatherService.getWeatherHistory({
@@ -22,7 +22,7 @@ export const useWeatherTable = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page]);
 
   return { loadTableData, loading, data, setPage, page, totalPages };
 };

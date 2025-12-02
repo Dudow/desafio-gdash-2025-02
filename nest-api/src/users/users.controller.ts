@@ -19,8 +19,8 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Get()
-  findAll(@Query() filters: SearchResultDTO) {
-    return this.usersService.findAll(filters);
+  async findAll(@Query() filters: SearchResultDTO) {
+    return await this.usersService.findAll(filters);
   }
 
   @Post('/login')
