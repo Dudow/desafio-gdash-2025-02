@@ -359,7 +359,7 @@ O Pull Request deve conter:
   - [ ] (Opcional) Integração com API pública paginada
 - [ ] Frontend React + Vite + Tailwind + shadcn/ui:
   - [ ] Dashboard de clima com dados reais
-  - [ ] Exibição de insights de IA
+  - [x] Exibição de insights de IA
   - [x] CRUD de usuários + login
   - [ ] (Opcional) Página consumindo API pública paginada
 - [x] Docker Compose sobe todos os serviços
