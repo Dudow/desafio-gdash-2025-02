@@ -1,7 +1,10 @@
 import { WeatherData } from "@/types/weather";
 import api from "./api";
 import { PaginatedResponse, PaginationParams } from "@/types/pagination";
-import { AIInsight } from "@/types/ai";
+
+type AIInsightReturn = {
+  data: string[];
+};
 
 export const weatherService = {
   async getCurrentWeather(): Promise<WeatherData> {
@@ -22,9 +25,10 @@ export const weatherService = {
     return response.data;
   },
 
-  async getAIInsights(): Promise<AIInsight[]> {
-    const response = await api.get<AIInsight[]>("/weathers/insights");
-    return response.data;
+  async getAIInsights(): Promise<string[]> {
+    const response = await api.post<AIInsightReturn>("/ai");
+
+    return response.data.data;
   },
 
   async exportToCSV(): Promise<Blob> {

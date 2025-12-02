@@ -1,5 +1,5 @@
 import { format, parseISO } from "date-fns";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { weatherService } from "@/services/weather";
 import { WeatherData } from "@/types/weather";
@@ -15,11 +15,11 @@ export const useWeatherChart = () => {
   const [data, setData] = useState<WeatherData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const loadChartData = async () => {
+  const loadChartData = useCallback(async () => {
     try {
       const response = await weatherService.getWeatherHistory({
         page: 1,
-        limit: 24,
+        limit: 20,
       });
       setData(response.data);
     } catch (error) {
@@ -27,7 +27,7 @@ export const useWeatherChart = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const chartData = data.map((item) => ({
     times: format(parseISO(item.timestamp), "HH:mm"),
