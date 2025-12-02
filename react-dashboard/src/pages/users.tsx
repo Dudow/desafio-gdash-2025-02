@@ -72,7 +72,7 @@ export default function Users() {
   const handleSaveUser = async () => {
     try {
       if (editingUser) {
-        await userService.updateUser(editingUser.id, {
+        await userService.updateUser(editingUser._id, {
           email: formData.email,
           name: formData.name,
         });
@@ -144,7 +144,7 @@ export default function Users() {
                   </TableRow>
                 ) : (
                   users.map((user) => (
-                    <TableRow key={user.id}>
+                    <TableRow key={user._id}>
                       <TableCell className="font-medium">{user.name}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>
@@ -163,7 +163,7 @@ export default function Users() {
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => handleDeleteUser(user.id)}
+                            onClick={() => handleDeleteUser(user._id)}
                           >
                             <Trash2 className="w-4 h-4 text-white" />
                           </Button>
@@ -204,7 +204,7 @@ export default function Users() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {editingUser ? "Editar Usuário" : "Novo Usuário"}
+                {editingUser ? "Edit User" : "New User"}
               </DialogTitle>
               <DialogDescription>Fill user data</DialogDescription>
             </DialogHeader>
