@@ -1,14 +1,14 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class SearchResultDTO {
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   @Type(() => Number)
   page!: number;
 
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   @Type(() => Number)
   limit!: number;
 }

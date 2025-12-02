@@ -7,14 +7,17 @@ import {
   UnauthorizedException,
   Res,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { WeathersService } from './weathers.service';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { CreateWeatherDTO } from 'src/weathers/dtos/create-weather.dto';
 import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
+import { AuthGuard } from 'src/auth/guards/jwt-authorization.guard';
 
 @Controller('weathers')
+@UseGuards(AuthGuard)
 export class WeathersController {
   constructor(
     private readonly weathersService: WeathersService,
@@ -36,7 +39,7 @@ export class WeathersController {
   }
 
   @Get()
-  findAll(@Query() filters: SearchResultDTO) {
+  findAll(@Query() filters?: SearchResultDTO) {
     return this.weathersService.findAll(filters);
   }
 
