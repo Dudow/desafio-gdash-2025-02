@@ -24,5 +24,12 @@ export const useWeatherTable = () => {
     }
   }, [page]);
 
-  return { loadTableData, loading, data, setPage, page, totalPages };
+  return {
+    loadTableData,
+    loading,
+    data,
+    setPage,
+    page,
+    totalPages,
+  };
 };

@@ -8,6 +8,7 @@ import WeatherTable from "../components/dashboard/WeatherTable";
 import AIInsightsCard from "../components/dashboard/AIInsightsCard";
 import { WeatherData } from "@/types/weather";
 import { weatherService } from "@/services/weather";
+import ExportButtons from "@/components/dashboard/ExportButtons";
 
 export default function Dashboard() {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
@@ -138,10 +139,15 @@ export default function Dashboard() {
         <AIInsightsCard insights={insights} aiLoading={aiLoading} />
 
         <Tabs defaultValue="charts" className="w-full">
-          <TabsList>
-            <TabsTrigger value="charts">Charts</TabsTrigger>
-            <TabsTrigger value="table">Data Table</TabsTrigger>
-          </TabsList>
+          <div className="flex w-full justify-between">
+            <TabsList>
+              <TabsTrigger value="charts">Charts</TabsTrigger>
+              <TabsTrigger value="table">Data Table</TabsTrigger>
+            </TabsList>
+            <div>
+              <ExportButtons />
+            </div>
+          </div>
           <TabsContent value="charts">
             <WeatherChart />
           </TabsContent>

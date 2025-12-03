@@ -27,7 +27,7 @@ export class WeathersRepository implements WeathersRepositoryInterface {
   async findAll(
     filters: SearchResultDTO,
   ): Promise<PaginatedResponse<WeatherDocument>> {
-    const { page = 1, limit = 10 } = filters ?? {};
+    const { page = 1, limit = 50 } = filters ?? {};
     const skip = (page - 1) * limit;
 
     const total = await this.weatherModel.countDocuments();
