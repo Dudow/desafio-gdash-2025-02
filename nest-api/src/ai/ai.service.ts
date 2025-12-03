@@ -10,7 +10,7 @@ export class AiService {
   private prompt =
     'You are a weather insights generator. Given weather data you will return average temperature in the last 5 hours';
 
-  async createInsight(): Promise<string> {
+  async createInsight(): Promise<string[]> {
     const weathers = await this.weathersService.findAll();
 
     const response = await this.client.responses.create({
@@ -37,6 +37,8 @@ export class AiService {
       ],
     });
 
-    return response.output_text;
+    // TO DO: ADD MORE INSIGHTS
+
+    return [response.output_text, 'olha o segundo insight'];
   }
 }
