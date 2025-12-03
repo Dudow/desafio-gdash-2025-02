@@ -59,7 +59,7 @@ export default function WeatherTable() {
             ) : (
               data.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{formatDate(item.timestamp)}</TableCell>
+                  <TableCell>{formatDate(item.updatedAt)}</TableCell>
                   <TableCell>{item.location}</TableCell>
                   <TableCell>{item.condition}</TableCell>
                   <TableCell>{formatTemperature(item.temperature)}</TableCell>

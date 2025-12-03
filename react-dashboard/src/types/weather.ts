@@ -6,5 +6,6 @@ export interface WeatherData {
   windSpeed: number;
   condition: string;
   timestamp: string;
+  updatedAt: string;
   precipitation: number;
 }

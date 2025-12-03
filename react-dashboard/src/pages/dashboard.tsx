@@ -15,15 +15,12 @@ export default function Dashboard() {
   );
   const [insights, setInsights] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [aiLoading, setAiLoading] = useState(true);
 
   const loadDashboardData = async () => {
     try {
-      const [weatherData, aiInsights] = await Promise.all([
-        weatherService.getCurrentWeather(),
-        weatherService.getAIInsights(),
-      ]);
+      const weatherData = await weatherService.getCurrentWeather();
       setCurrentWeather(weatherData);
-      setInsights(aiInsights);
     } catch (error: any) {
       toast("Loading error", {
         description: error.message,
@@ -33,8 +30,23 @@ export default function Dashboard() {
     }
   };
 
+  const loadAiInsight = async () => {
+    try {
+      const aiInsights = await weatherService.getAIInsights();
+
+      setInsights(aiInsights);
+    } catch (error: any) {
+      toast("Loading error", {
+        description: error.message,
+      });
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadDashboardData();
+    loadAiInsight();
   }, []);
 
   if (loading) {
@@ -123,7 +135,7 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <AIInsightsCard insights={insights} />
+        <AIInsightsCard insights={insights} aiLoading={aiLoading} />
 
         <Tabs defaultValue="charts" className="w-full">
           <TabsList>

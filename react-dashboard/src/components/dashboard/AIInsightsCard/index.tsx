@@ -10,9 +10,13 @@ import { Lightbulb, Info } from "lucide-react";
 
 interface AIInsightsCardProps {
   insights: string[];
+  aiLoading: boolean;
 }
 
-export default function AIInsightsCard({ insights }: AIInsightsCardProps) {
+export default function AIInsightsCard({
+  insights,
+  aiLoading,
+}: AIInsightsCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -23,7 +27,14 @@ export default function AIInsightsCard({ insights }: AIInsightsCardProps) {
         <CardDescription>Recomended</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        {insights.length === 0 ? (
+        {aiLoading ? (
+          <Alert variant={"default"}>
+            <AlertTitle className="ml-2 flex gap-3 items-center m-0">
+              <Info className="w-5 h-5 text-blue-500" />
+              Loading...
+            </AlertTitle>
+          </Alert>
+        ) : insights.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No insights available yet
           </p>
