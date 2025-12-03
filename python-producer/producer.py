@@ -22,6 +22,7 @@ WEATHER_CODES_ENUM = {
     3: "Nublado",
     51: "Garoa leve",
     61: "Chuva leve",
+    80: "Pancadas de chuva"
 }
 
 def fetch_weather():
