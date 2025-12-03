@@ -30,7 +30,7 @@ export const useWeatherChart = () => {
   }, []);
 
   const chartData = data.map((item) => ({
-    times: format(parseISO(item.timestamp), "HH:mm"),
+    times: format(parseISO(item.updatedAt), "HH:mm"),
     temperatures: item.temperature,
     humidities: item.humidity,
     windSpeeds: item.windSpeed,

@@ -22,6 +22,8 @@ interface HumidityCardProps {
 }
 
 export default function HumidityCard({ chartData }: HumidityCardProps) {
+  const chartDataCorrectOrder = [...chartData].reverse();
+
   return (
     <Card>
       <CardHeader>
@@ -30,7 +32,7 @@ export default function HumidityCard({ chartData }: HumidityCardProps) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData}>
+          <LineChart data={chartDataCorrectOrder}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="times" />
             <YAxis />
