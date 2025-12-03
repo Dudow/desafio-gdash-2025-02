@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { cn } from "@/lib/utils";
 
-import { LayoutDashboard, Brain, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, LogOut, BrainCircuit } from "lucide-react";
 
 export function Sidebar() {
   const { pathname } = useLocation();
@@ -20,20 +20,16 @@ export function Sidebar() {
   return (
     <aside className="h-full min-h-screen w-64 border-r flex flex-col bg-background justify-between">
       <div className="flex flex-col">
-        <div className="p-6 text-2xl font-bold">Logo</div>
+        <div className="p-6 pb-4 text-2xl font-bold flex items-center gap-3">
+          <BrainCircuit className="w-8 h-8" />
+          GDASHOW
+        </div>
         <Separator className="my-5" />
         <div className="flex flex-col gap-2 px-3">
           <NavLink to="/">
             <Button variant="ghost" className={linkClasses("/")}>
               <LayoutDashboard className="w-5 h-5" />
               Dashboard
-            </Button>
-          </NavLink>
-
-          <NavLink to="/ai-insights">
-            <Button variant="ghost" className={linkClasses("/ai-insights")}>
-              <Brain className="w-5 h-5" />
-              AI Insights
             </Button>
           </NavLink>
 
