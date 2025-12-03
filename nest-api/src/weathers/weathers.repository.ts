@@ -27,20 +27,10 @@ export class WeathersRepository implements WeathersRepositoryInterface {
   async findAll(
     filters: SearchResultDTO,
   ): Promise<PaginatedResponse<WeatherDocument>> {
-    const shouldPaginate = filters?.page || filters?.limit;
-
-    if (!shouldPaginate) {
-      const data = await this.weatherModel.find();
-      return {
-        data,
-        total: data.length,
-        page: 1,
-        totalPages: 1,
-      };
-    }
-
-    const { page = 1, limit = 10 } = filters;
+    const { page = 1, limit = 10 } = filters ?? {};
     const skip = (page - 1) * limit;
+
+    const total = await this.weatherModel.countDocuments();
 
     const data = await this.weatherModel
       .find()
@@ -48,11 +38,13 @@ export class WeathersRepository implements WeathersRepositoryInterface {
       .skip(skip)
       .limit(limit);
 
+    const totalPages = Math.ceil(total / limit);
+
     return {
       data,
-      total: data.length,
-      page: 1,
-      totalPages: 1,
+      total,
+      page,
+      totalPages,
     };
   }
 

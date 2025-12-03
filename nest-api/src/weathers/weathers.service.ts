@@ -28,31 +28,9 @@ export class WeathersService {
   async findAll(
     filters?: SearchResultDTO,
   ): Promise<PaginatedResponse<WeatherDocument>> {
-    const shouldPaginate = filters?.page || filters?.limit;
+    const data = await this.weathersRepository.findAll(filters);
 
-    if (!shouldPaginate) {
-      const { data } = await this.weathersRepository.findAll();
-      return {
-        data,
-        total: data.length,
-        page: 1,
-        totalPages: 1,
-      };
-    }
-
-    const page = filters.page ?? 1;
-    const limit = filters.limit ?? 20;
-
-    const { data } = await this.weathersRepository.findAll({ page, limit });
-    const total = data.length;
-    const totalPages = Math.max(1, Math.ceil(total / limit));
-
-    return {
-      data: data,
-      total,
-      page,
-      totalPages,
-    };
+    return data;
   }
 
   async getCurrent(): Promise<WeatherDocument> {
