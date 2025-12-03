@@ -39,7 +39,7 @@ export default function PokemonList({
                 <Button
                   key={pokemon.name}
                   variant="outline"
-                  className="h-auto py-3 text-white"
+                  className="h-auto py-3"
                   onClick={() => loadPokemonDetails(pokemon.url)}
                 >
                   {pokemon.name}

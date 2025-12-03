@@ -18,7 +18,6 @@ function App() {
           {/* Common Routes */}
           <Route element={<AppLayoutDefault />}>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/explore" element={<ExplorePage />} />
           </Route>
 
           {/* Protected Routes */}

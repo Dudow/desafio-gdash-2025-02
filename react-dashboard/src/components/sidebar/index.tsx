@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@components/ui/separator";
 import { cn } from "@/lib/utils";
 
-import { LayoutDashboard, Users, LogOut, BrainCircuit } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  LogOut,
+  BrainCircuit,
+  Telescope,
+} from "lucide-react";
 
 export function Sidebar() {
   const { pathname } = useLocation();
@@ -37,6 +43,13 @@ export function Sidebar() {
             <Button variant="ghost" className={linkClasses("/users")}>
               <Users className="w-5 h-5" />
               Users
+            </Button>
+          </NavLink>
+
+          <NavLink to="/explore">
+            <Button variant="ghost" className={linkClasses("/explore")}>
+              <Telescope className="w-5 h-5" />
+              Explore
             </Button>
           </NavLink>
         </div>
