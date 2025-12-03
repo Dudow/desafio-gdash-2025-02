@@ -70,8 +70,8 @@ export default function Dashboard() {
             </h1>
             <p className="text-gray-600">
               Last Update:{" "}
-              {currentWeather?.timestamp &&
-                new Date(currentWeather.timestamp).toLocaleString("pt-BR")}
+              {currentWeather?.updatedAt &&
+                new Date(currentWeather.updatedAt).toLocaleString("pt-BR")}
             </p>
           </div>
         </div>
