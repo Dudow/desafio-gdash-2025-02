@@ -16,13 +16,19 @@ INTERVAL = int(os.getenv("INTERVAL", 10))
 
 # https://open-meteo.com/en/docs#weather_variable_documentation
 WEATHER_CODES_ENUM = {
-    0: "Céu limpo",
-    1: "Parcialmente limpo",
-    2: "Parcialmente nublado",
-    3: "Nublado",
-    51: "Garoa leve",
-    61: "Chuva leve",
-    80: "Pancadas de chuva"
+    0: "Clear sky",
+    1: "Mainly clear",
+    2: "Partly cloudy",
+    3: "Overcast",
+    51: "Light Drizzle",
+    53: "Moderate Drizzle",
+    55: "Intense Drizzle",
+    61: "Slight Rain",
+    63: "Moderate Rain",
+    65: "Intense Rain",
+    80: "Light Rain showers",
+    81: "Moderate Rain showers",
+    82: "Heavy Rain showers"
 }
 
 def fetch_weather():
