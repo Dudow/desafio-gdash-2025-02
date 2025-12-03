@@ -6,9 +6,19 @@ import { WeathersService } from 'src/weathers/weathers.service';
 export class AiService {
   constructor(private readonly weathersService: WeathersService) {}
 
+  // https://platform.openai.com/usage
   private client = new OpenAI();
-  private prompt =
-    'You are a weather insights generator. Given weather data you will return average temperature in the last 5 hours';
+
+  private prompt = `
+    You are a weather insights generator. 
+    Given weather data, return a JSON array of insights.
+    Each insight must be a short and clear sentence.
+    Insight 1: return average temperature in the last 5 hours
+    Insight 2: return average humidity in the last 5 hours
+    Insight 3: return an extra insight 
+    Example output:
+    ["Insight 1...", "Insight 2...", "Insight 3..."]
+`;
 
   async createInsight(): Promise<string[]> {
     const weathers = await this.weathersService.findAll();
@@ -37,8 +47,8 @@ export class AiService {
       ],
     });
 
-    // TO DO: ADD MORE INSIGHTS
+    const output = response.output_text;
 
-    return [response.output_text, 'olha o segundo insight'];
+    return JSON.parse(output);
   }
 }

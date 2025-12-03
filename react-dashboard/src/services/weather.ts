@@ -26,8 +26,9 @@ export const weatherService = {
   },
 
   async getAIInsights(): Promise<string[]> {
-    const response = await api.post<AIInsightReturn>("/ai");
-
+    const response = await api.post<AIInsightReturn>("/ai", {
+      timeout: 60000,
+    });
     return response.data.data;
   },
 
