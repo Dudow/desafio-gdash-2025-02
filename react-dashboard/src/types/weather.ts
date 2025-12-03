@@ -1,5 +1,5 @@
 export interface WeatherData {
-  id: string;
+  _id: string;
   location: string;
   temperature: number;
   humidity: number;
