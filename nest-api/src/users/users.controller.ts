@@ -15,6 +15,7 @@ import { LoginUserDTO } from 'src/users/dtos/login-user.dto';
 import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
 import { AuthGuard } from 'src/auth/guards/jwt-authorization.guard';
 import { UpdateUserDTO } from './dtos/update-user.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -45,6 +46,7 @@ export class UsersController {
     return result;
   }
 
+  @Public()
   @Post('/login')
   async login(@Body() loginUserDTO: LoginUserDTO) {
     const result = await this.usersService.login(loginUserDTO);

@@ -15,6 +15,7 @@ import { ConfigService } from '@nestjs/config';
 import { CreateWeatherDTO } from 'src/weathers/dtos/create-weather.dto';
 import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
 import { AuthGuard } from 'src/auth/guards/jwt-authorization.guard';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('weathers')
 @UseGuards(AuthGuard)
@@ -24,6 +25,7 @@ export class WeathersController {
     private readonly configService: ConfigService,
   ) {}
 
+  @Public()
   @Post('/register-weather')
   create(@Body() createWeatherDto: CreateWeatherDTO, @Req() request: Request) {
     const weatherApiToken = request.headers['weather_api_token'];
