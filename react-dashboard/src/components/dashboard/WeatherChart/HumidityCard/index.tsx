@@ -28,7 +28,7 @@ export default function HumidityCard({ chartData }: HumidityCardProps) {
     <Card>
       <CardHeader>
         <CardTitle>Humidity and Wind Speed</CardTitle>
-        <CardDescription>Last 24 horas</CardDescription>
+        <CardDescription>Last 24 logs</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>

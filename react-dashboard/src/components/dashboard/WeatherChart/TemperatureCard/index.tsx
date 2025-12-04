@@ -28,7 +28,7 @@ export default function TemperatureChart({ chartData }: TemperatureChartProps) {
     <Card>
       <CardHeader>
         <CardTitle>Temperature</CardTitle>
-        <CardDescription>Last 24 hours</CardDescription>
+        <CardDescription>Last 24 logs</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
