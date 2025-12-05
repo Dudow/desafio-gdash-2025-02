@@ -1,30 +1,11 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import PokemonList from "@/components/explore/pokemonList";
 import PokemonDetailsComponent from "@/components/explore/pokemonDetails";
-
-export interface Pokemon {
-  name: string;
-  url: string;
-}
-
-export interface PokemonDetails {
-  id: number;
-  name: string;
-  height: number;
-  weight: number;
-  sprites: {
-    front_default: string;
-  };
-  types: Array<{
-    type: {
-      name: string;
-    };
-  }>;
-}
+import { exploreService } from "@/services/explore";
+import { ExploreResponse, PokemonDetails } from "@/types/explore";
 
 export default function ExplorePage() {
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [pokemons, setPokemons] = useState<ExploreResponse[]>([]);
   const [selectedPokemon, setSelectedPokemon] = useState<
     PokemonDetails | undefined
   >(undefined);
@@ -41,13 +22,9 @@ export default function ExplorePage() {
   const loadPokemons = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${
-          page * limit
-        }`
-      );
-      setPokemons(response.data.results);
-      setTotalPokemons(response.data.count);
+      const response = await exploreService.getAllPokemons({ limit: 20, page });
+      setPokemons(response.data);
+      setTotalPokemons(response.total);
     } catch (error) {
       console.error("Error loading pokemons:", error);
     } finally {

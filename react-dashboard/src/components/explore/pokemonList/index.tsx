@@ -1,14 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pokemon, PokemonDetails } from "@/pages/explorePage";
 import { Dispatch, SetStateAction } from "react";
 import Pagination from "@/components/pagination";
 import { usePokemonList } from "./use";
+import { ExploreResponse, PokemonDetails } from "@/types/explore";
 
 interface PokemonListProps {
   setSelectedPokemon: Dispatch<SetStateAction<PokemonDetails | undefined>>;
   loading: boolean;
-  pokemons: Pokemon[];
+  pokemons: ExploreResponse[];
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
   totalPages: number;
@@ -40,7 +40,7 @@ export default function PokemonList({
                   key={pokemon.name}
                   variant="outline"
                   className="h-auto py-3"
-                  onClick={() => loadPokemonDetails(pokemon.url)}
+                  onClick={() => loadPokemonDetails(pokemon.name)}
                 >
                   {pokemon.name}
                 </Button>

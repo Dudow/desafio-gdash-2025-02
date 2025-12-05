@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PokemonDetails } from "@/pages/explorePage";
+import { PokemonDetails } from "@/types/explore";
 
 interface PokemonDetailsProps {
   selectedPokemon?: PokemonDetails;

@@ -1,5 +1,5 @@
-import { PokemonDetails } from "@/pages/explorePage";
-import axios from "axios";
+import { exploreService } from "@/services/explore";
+import { PokemonDetails } from "@/types/explore";
 import { Dispatch, SetStateAction } from "react";
 
 interface usePokemonListProps {
@@ -7,10 +7,10 @@ interface usePokemonListProps {
 }
 
 export const usePokemonList = ({ setSelectedPokemon }: usePokemonListProps) => {
-  const loadPokemonDetails = async (url: string) => {
+  const loadPokemonDetails = async (name: string) => {
     try {
-      const response = await axios.get<PokemonDetails>(url);
-      setSelectedPokemon(response.data);
+      const response = await exploreService.getByName(name);
+      setSelectedPokemon(response);
     } catch (error) {
       console.error("Error loading pokemon data:", error);
     }

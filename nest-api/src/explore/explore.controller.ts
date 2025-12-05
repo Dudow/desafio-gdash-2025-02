@@ -1,6 +1,7 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { ExploreService } from './explore.service';
 import { AuthGuard } from 'src/auth/guards/jwt-authorization.guard';
+import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
 
 @Controller('explore')
 @UseGuards(AuthGuard)
@@ -8,8 +9,8 @@ export class ExploreController {
   constructor(private readonly exploreService: ExploreService) {}
 
   @Get()
-  findAll() {
-    return this.exploreService.findAll();
+  findAll(@Query() filters?: SearchResultDTO) {
+    return this.exploreService.findAll(filters);
   }
 
   @Get(':name')
