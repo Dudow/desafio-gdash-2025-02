@@ -83,7 +83,6 @@ func createChannel(conn *amqp091.Connection) *amqp091.Channel {
     return channel
 }
 
-// TO DO: REALLY USE ENV
 func getenv(key, def string) string {
     v := os.Getenv(key)
     if v == "" {
