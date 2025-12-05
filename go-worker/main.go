@@ -24,9 +24,9 @@ type WeatherMessage struct {
 
 func main() {
 	rabbitURL := getenv("RABBIT_URL", "amqp://teste:senha@rabbitmq:5672/")
-	// TO DO: PASS IT TO ENV
-	// apiURL := getenv("RABBIT_URL", "http://localhost:3004/")
-	// WEATHER_API_TOKEN := "Jn~TYLH).la"
+	apiURL := getenv("WEATHER_API_URL", "http://api:3004/weathers/register-weather")
+	weatherAPIToken := getenv("WEATHER_API_TOKEN", "")
+
 
 	queueName := getenv("QUEUE_NAME", "weather_queue")
 
@@ -36,7 +36,7 @@ func main() {
 	defer connection.Close()
 	defer channel.Close()
 
-	messages, error := channel.Consume(
+	messages, err := channel.Consume(
 		queueName,
 		"",
 		false,  
@@ -45,8 +45,8 @@ func main() {
 		false,
 		nil,
 	)
-	if error != nil {
-		log.Fatalf("Queue error: %v", error)
+	if err != nil {
+		log.Fatalf("Queue error: %v", err)
 	}
 
 	fmt.Println("Worker Go waiting for messages...")
@@ -55,7 +55,7 @@ func main() {
 
 	go func() {
 		for message := range messages {
-			handleMessage(message, channel)
+			handleMessage(message, channel, apiURL, weatherAPIToken)
 		}
 	}()
 
@@ -64,9 +64,9 @@ func main() {
 
 func connectRabbit(url string) *amqp091.Connection {
     for {
-		connection, error := amqp091.Dial(url)
-        if error != nil {
-            log.Printf("RabbitMQ connection error: %s\nRetrying in 5 seconds...", error)
+		connection, err := amqp091.Dial(url)
+        if err != nil {
+            log.Printf("RabbitMQ connection error: %s\nRetrying in 5 seconds...", err)
             time.Sleep(5 * time.Second)
             continue
         }
@@ -76,9 +76,9 @@ func connectRabbit(url string) *amqp091.Connection {
 }
 
 func createChannel(conn *amqp091.Connection) *amqp091.Channel {
-    channel, error := conn.Channel()
-    if error != nil {
-        log.Fatalf("Failed to open channel: %s", error)
+    channel, err := conn.Channel()
+    if err != nil {
+        log.Fatalf("Failed to open channel: %s", err)
     }
     return channel
 }
@@ -117,16 +117,16 @@ func processWeather(weather WeatherMessage) error {
     return nil 
 }
 
-func handleMessage(message amqp091.Delivery, channel *amqp091.Channel) {
+func handleMessage(message amqp091.Delivery, channel *amqp091.Channel, apiURL, weatherAPIToken string) {
 	var data WeatherMessage
 
 	headers := map[string]string{
 		"Content-Type": "application/json",
-		"WEATHER_API_TOKEN": "Jn~TYLH).la",
+		"WEATHER_API_TOKEN": weatherAPIToken,
 	}
 
+	
 	error := json.Unmarshal(message.Body, &data)
-
 	if error != nil {
 		fmt.Println("JSON Parse error:", error)
 		message.Nack(false, false)
@@ -137,7 +137,7 @@ func handleMessage(message amqp091.Delivery, channel *amqp091.Channel) {
 	err := processWeather(data)
 	if err == nil {
 		message.Ack(false)
-		sendPost("http://api:3004/weathers/register-weather", data, headers)
+		sendPost(apiURL, data, headers)
 		return
 	}
 
@@ -159,7 +159,7 @@ func republishMessage(message amqp091.Delivery, channel *amqp091.Channel, retryC
 		"x-retry": int32(retryCount + 1),
 	}
 
-	error := channel.Publish(
+	err := channel.Publish(
 		"",
 		message.RoutingKey,
 		false,
@@ -171,36 +171,42 @@ func republishMessage(message amqp091.Delivery, channel *amqp091.Channel, retryC
 		},
 	)
 
-	if error != nil {
-		log.Printf("Failed to republish: %v", error)
+	if err != nil {
+		log.Printf("Failed to republish: %v", err)
 		message.Nack(false, false)
 		return
 	}
+
+
 }
 
 func validateWeatherMessage(weather WeatherMessage) error {
-    if weather.Timestamp == "" ||
-        weather.Location == "" ||
-        weather.Temperature == 0 ||
-        weather.Humidity == 0 ||
-        weather.WindSpeed == 0 ||
-        weather.Condition == "" {
-        return fmt.Errorf("missing required fields")
-    }
+	if weather.Timestamp == "" {
+		return fmt.Errorf("timestamp is required")
+	}
+	if weather.Location == "" {
+		return fmt.Errorf("location is required")
+	}
+	if weather.Humidity < 0 || weather.Humidity > 100 {
+		return fmt.Errorf("humidity must be between 0 and 100")
+	}
+	if weather.Condition == "" {
+		return fmt.Errorf("condition is required")
+	}
 
     return nil
 }
 
 func sendPost(url string, data WeatherMessage, headers map[string]string) (*http.Response, error) {
 
-	jsonData, error := json.Marshal(data)
-	if error != nil {
-		return nil, fmt.Errorf("failed to marshal json: %w", error)
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal json: %w", err)
 	}
 
-	req, error := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	if error != nil {
-		return nil, fmt.Errorf("failed to create request: %w", error)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
 	// Add headers
@@ -209,12 +215,19 @@ func sendPost(url string, data WeatherMessage, headers map[string]string) (*http
 		req.Header.Set(k, v)
 	}
 
-	client := &http.Client{}
-	res, error := client.Do(req)
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	res, err := client.Do(req)
 
 
-	if error != nil {
-		return nil, fmt.Errorf("failed to send request: %w", error)
+	if err != nil {
+		return nil, fmt.Errorf("failed to send request: %w", err)
+	}
+
+	if res.StatusCode < 200 || res.StatusCode >= 300 {
+		defer res.Body.Close()
+		return res, fmt.Errorf("non-2xx status code: %d", res.StatusCode)
 	}
 
 	return res, nil
