@@ -11,9 +11,11 @@ import {
   BrainCircuit,
   Telescope,
 } from "lucide-react";
+import { useAuth } from "@/contexts/authContext/useAuth";
 
 export function Sidebar() {
   const { pathname } = useLocation();
+  const { logout } = useAuth();
 
   const linkClasses = (path: string) =>
     cn(
@@ -60,6 +62,7 @@ export function Sidebar() {
           <Button
             variant="outline"
             className="w-full justify-start gap-3 text-muted-foreground hover:text-red-600 hover:bg-red-50"
+            onClick={logout}
           >
             <LogOut className="w-5 h-5" />
             Logout
