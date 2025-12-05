@@ -356,14 +356,14 @@ O Pull Request deve conter:
   - [x] Gera/retorna insights de IA (endpoint próprio)
   - [x] Exporta dados em CSV/XLSX
   - [x] Implementa CRUD de usuários + autenticação
-  - [ ] (Opcional) Integração com API pública paginada
+  - [x] (Opcional) Integração com API pública paginada
 - [ ] Frontend React + Vite + Tailwind + shadcn/ui:
   - [x] Dashboard de clima com dados reais
   - [x] Exibição de insights de IA
   - [x] Exporta dados em CSV/XLSX
   - [x] CRUD de usuários + login
   - [ ] Autenticação
-  - [ ] (Opcional) Página consumindo API pública paginada
+  - [x] (Opcional) Página consumindo API pública paginada
 - [x] Docker Compose sobe todos os serviços
 - [x] Código em TypeScript (backend e frontend)
 - [ ] Vídeo explicativo (máx. 5 minutos)
