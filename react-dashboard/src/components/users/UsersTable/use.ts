@@ -1,4 +1,5 @@
 import { userService } from "@/services/user";
+import axios from "axios";
 import { toast } from "sonner";
 
 interface UseUsersTableProps {
@@ -13,10 +14,18 @@ export const useUsersTable = ({ loadUsers }: UseUsersTableProps) => {
       await userService.deleteUser(id);
       toast("User deleted!");
       loadUsers();
-    } catch (error: any) {
-      toast("User delete error", {
-        description: error.message,
-      });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast("User delete error", {
+          description: error.message,
+        });
+      } else if (error instanceof Error) {
+        toast("Error", {
+          description: error.message,
+        });
+      } else {
+        console.error("Unknown error:", error);
+      }
     }
   };
 

@@ -1,6 +1,7 @@
 import { AuthResponse } from "@/types/auth";
 import api from "./api";
 import { User } from "@/types/user";
+import axios from "axios";
 
 export const authService = {
   async login(email: string, password: string): Promise<AuthResponse> {
@@ -10,12 +11,31 @@ export const authService = {
         password,
       });
 
+      const token = response.data.jwtToken;
+
+      document.cookie = `token=${token}; path=/; expires=${new Date(
+        Date.now() + 86400000
+      ).toUTCString()}; secure; samesite=strict`;
+
       return response.data;
-    } catch (error: any) {
-      throw {
-        message: error.response?.data?.message || "Login Error",
-        status: error.response?.status,
-      };
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        throw {
+          message: error.response?.data?.message || "Login Error",
+          status: error.response?.status,
+        };
+      } else if (error instanceof Error) {
+        throw {
+          message: error.message || "Login Error",
+        };
+      } else {
+        console.error();
+
+        throw {
+          message: "Unknown error:",
+          error,
+        };
+      }
     }
   },
 
@@ -30,6 +50,8 @@ export const authService = {
 
   async getCurrentUser(): Promise<User> {
     const response = await api.get<User>("/auth/me");
+
+    // TO DO: SET CORRECT AUTH
     return response.data;
   },
 
@@ -37,3 +59,5 @@ export const authService = {
     localStorage.removeItem("token");
   },
 };
+
+// TO DO: TIRAR TODOS OS TOKEN DO LOCALSTORAGE

@@ -9,6 +9,7 @@ import AIInsightsCard from "../components/dashboard/AIInsightsCard";
 import { WeatherData } from "@/types/weather";
 import { weatherService } from "@/services/weather";
 import ExportButtons from "@/components/dashboard/ExportButtons";
+import axios from "axios";
 
 export default function Dashboard() {
   const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
@@ -22,10 +23,18 @@ export default function Dashboard() {
     try {
       const weatherData = await weatherService.getCurrentWeather();
       setCurrentWeather(weatherData);
-    } catch (error: any) {
-      toast("Loading error", {
-        description: error.message,
-      });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast("Loading error", {
+          description: error.message,
+        });
+      } else if (error instanceof Error) {
+        toast("Error", {
+          description: error.message,
+        });
+      } else {
+        console.error("Unknown error:", error);
+      }
     } finally {
       setLoading(false);
     }
@@ -36,10 +45,18 @@ export default function Dashboard() {
       const aiInsights = await weatherService.getAIInsights();
 
       setInsights(aiInsights);
-    } catch (error: any) {
-      toast("Loading error", {
-        description: error.message,
-      });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast("Loading error", {
+          description: error.message,
+        });
+      } else if (error instanceof Error) {
+        toast("Error", {
+          description: error.message,
+        });
+      } else {
+        console.error("Unknown error:", error);
+      }
     } finally {
       setAiLoading(false);
     }

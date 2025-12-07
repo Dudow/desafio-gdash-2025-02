@@ -13,6 +13,7 @@ import {
 import { CloudRain } from "lucide-react";
 import { useAuth } from "@/contexts/authContext/useAuth";
 import { toast } from "sonner";
+import axios from "axios";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -30,10 +31,19 @@ export default function LoginPage() {
 
       toast("You logged in!");
       navigate("/");
-    } catch (error: any) {
-      toast("Login error", {
-        description: error.response?.data?.message || "Check your credentials.",
-      });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast("Login error", {
+          description:
+            error.response?.data?.message || "Check your credentials.",
+        });
+      } else if (error instanceof Error) {
+        toast("Error", {
+          description: error.message,
+        });
+      } else {
+        console.error("Unknown error:", error);
+      }
     } finally {
       setLoading(false);
     }

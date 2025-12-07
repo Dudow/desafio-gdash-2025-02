@@ -1,5 +1,6 @@
 import { userService } from "@/services/user";
 import { User } from "@/types/user";
+import axios from "axios";
 import { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "sonner";
 
@@ -28,10 +29,18 @@ export const useUsersModal = ({
       }
       setIsDialogOpen(false);
       loadUsers();
-    } catch (error: any) {
-      toast("Error", {
-        description: error.response?.data?.message || error.message,
-      });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast("Error", {
+          description: error.response?.data?.message || error.message,
+        });
+      } else if (error instanceof Error) {
+        toast("Error", {
+          description: error.message,
+        });
+      } else {
+        console.error("Unknown error:", error);
+      }
     }
   };
 

@@ -8,6 +8,7 @@ import { User } from "@/types/user";
 import { PaginationParams } from "@/types/pagination";
 import UsersModal from "@/components/users/UsersModal";
 import UsersTable from "@/components/users/UsersTable";
+import axios from "axios";
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
@@ -28,10 +29,18 @@ export default function Users() {
       const response = await userService.getUsers(params);
       setUsers(response.data);
       setTotalPages(response.totalPages);
-    } catch (error: any) {
-      toast("User loading error", {
-        description: error.message,
-      });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast("User loading error", {
+          description: error.message,
+        });
+      } else if (error instanceof Error) {
+        toast("Error", {
+          description: error.message,
+        });
+      } else {
+        console.error("Unknown error:", error);
+      }
     } finally {
       setLoading(false);
     }
