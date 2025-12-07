@@ -84,7 +84,8 @@ export default function UsersTable({
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => handleDeleteUser(user._id)}
+                        onClick={() => handleDeleteUser(user._id, user.email)}
+                        disabled={user.email === "admin@example.com"}
                       >
                         <Trash2 className="w-4 h-4 text-white" />
                       </Button>

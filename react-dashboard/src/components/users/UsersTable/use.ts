@@ -7,8 +7,10 @@ interface UseUsersTableProps {
 }
 
 export const useUsersTable = ({ loadUsers }: UseUsersTableProps) => {
-  const handleDeleteUser = async (id: string) => {
+  const handleDeleteUser = async (id: string, email: string) => {
     if (!confirm("Delete this user?")) return;
+
+    if (email === "admin@example.com") return;
 
     try {
       await userService.deleteUser(id);
