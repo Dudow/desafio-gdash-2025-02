@@ -20,10 +20,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Edit, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Edit, Trash2 } from "lucide-react";
 import { userService } from "@/services/user";
 import { User } from "@/types/user";
 import { PaginationParams } from "@/types/pagination";
+import Pagination from "@/components/pagination";
+
+// TO DO: SPLIT THIS PAGE INTO COMPONENTS
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
@@ -175,28 +178,12 @@ export default function Users() {
               </TableBody>
             </Table>
 
-            {/* TO DO: ADD CORRECT PAGINATION */}
-            <div className="flex items-center justify-between mt-4">
-              <Button
-                variant="outline"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Previous
-              </Button>
-              <span className="text-sm text-gray-600">
-                Page {page}/{totalPages}
-              </span>
-              <Button
-                variant="outline"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-              >
-                Next
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            </div>
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              setPage={setPage}
+              loading={loading}
+            />
           </CardContent>
         </Card>
 
