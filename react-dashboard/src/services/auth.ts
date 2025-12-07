@@ -11,12 +11,6 @@ export const authService = {
         password,
       });
 
-      const token = response.data.jwtToken;
-
-      document.cookie = `token=${token}; path=/; expires=${new Date(
-        Date.now() + 86400000
-      ).toUTCString()}; secure; samesite=strict`;
-
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -49,9 +43,8 @@ export const authService = {
   },
 
   async getCurrentUser(): Promise<User> {
-    const response = await api.get<User>("/auth/me");
+    const response = await api.get<User>("/users/me");
 
-    // TO DO: SET CORRECT AUTH
     return response.data;
   },
 
@@ -59,5 +52,3 @@ export const authService = {
     localStorage.removeItem("token");
   },
 };
-
-// TO DO: TIRAR TODOS OS TOKEN DO LOCALSTORAGE

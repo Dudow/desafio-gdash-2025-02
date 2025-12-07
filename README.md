@@ -362,14 +362,14 @@ O Pull Request deve conter:
   - [x] Exibição de insights de IA
   - [x] Exporta dados em CSV/XLSX
   - [x] CRUD de usuários + login
-  - [ ] Autenticação
+  - [x] Autenticação
   - [x] (Opcional) Página consumindo API pública paginada
 - [x] Docker Compose sobe todos os serviços
 - [x] Código em TypeScript (backend e frontend)
 - [ ] Vídeo explicativo (máx. 5 minutos)
 - [ ] Pull Request via branch com seu nome completo
 - [ ] README completo com instruções de execução
-- [ ] Logs e tratamento de erros básicos em cada serviço
+- [x] Logs e tratamento de erros básicos em cada serviço
 
 ---
 

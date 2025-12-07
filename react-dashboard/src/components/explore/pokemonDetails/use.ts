@@ -1,4 +1,4 @@
-import { PokemonDetails } from "@/pages/explorePage";
+import { PokemonDetails } from "@/types/explore";
 import axios from "axios";
 import { Dispatch, SetStateAction } from "react";
 

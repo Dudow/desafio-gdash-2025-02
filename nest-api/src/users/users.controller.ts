@@ -7,6 +7,8 @@ import {
   Patch,
   Post,
   Query,
+  Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDTO } from 'src/users/dtos/create-user.dto';
@@ -16,6 +18,12 @@ import { SearchResultDTO } from 'src/common/dtos/search-result.dto';
 import { AuthGuard } from 'src/auth/guards/jwt-authorization.guard';
 import { UpdateUserDTO } from './dtos/update-user.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { Response } from 'express';
+import { UserModel } from './users.schema';
+
+interface RequestWithUser extends Request {
+  user: UserModel;
+}
 
 @Controller('users')
 export class UsersController {
@@ -48,10 +56,26 @@ export class UsersController {
 
   @Public()
   @Post('/login')
-  async login(@Body() loginUserDTO: LoginUserDTO) {
-    const result = await this.usersService.login(loginUserDTO);
+  async login(
+    @Body() loginUserDTO: LoginUserDTO,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { user, jwtToken } = await this.usersService.login(loginUserDTO);
 
-    return result;
+    res.cookie('token', jwtToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000, // 24h,
+    });
+
+    return { user };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async getMe(@Req() req: RequestWithUser) {
+    return req.user;
   }
 
   @UseGuards(AuthGuard)

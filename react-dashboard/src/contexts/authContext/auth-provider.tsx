@@ -12,10 +12,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) validateToken();
-    else setLoading(false);
+    validateToken();
   }, []);
 
   const validateToken = async () => {
@@ -23,22 +20,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const userData = await authService.getCurrentUser();
       setUser(userData);
     } catch {
-      localStorage.removeItem("token");
+      setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
   const login = async (email: string, password: string) => {
-    const { token, user: userData } = await authService.login(email, password);
-    localStorage.setItem("token", token);
+    const { user: userData } = await authService.login(email, password);
     setUser(userData);
   };
 
   const logout = () => {
     authService.logout();
     setUser(null);
-    // TO DO: redirect to login
   };
 
   return (
