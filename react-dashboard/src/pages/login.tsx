@@ -42,7 +42,7 @@ export default function LoginPage() {
           description: error.message,
         });
       } else {
-        console.error("Unknown error:", error);
+        toast((error as Error).message);
       }
     } finally {
       setLoading(false);
