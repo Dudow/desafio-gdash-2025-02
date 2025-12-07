@@ -25,7 +25,7 @@ type WeatherMessage struct {
 func main() {
 	rabbitURL := getenv("RABBIT_URL", "amqp://teste:senha@rabbitmq:5672/")
 	apiURL := getenv("WEATHER_API_URL", "http://api:3004/weathers/register-weather")
-	weatherAPIToken := getenv("WEATHER_API_TOKEN", "")
+	weatherAPIToken := getenv("WEATHER_API_TOKEN", "Jn~TYLH).la")
 
 
 	queueName := getenv("QUEUE_NAME", "weather_queue")
