@@ -68,16 +68,16 @@ services:
     tty: true
     stdin_open: true
 
-  # frontend:
-  #   container_name: gdash_frontend
-  #   build:
-  #     context: ./react-dashboard
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3005:80"
-  #   env_file:
-  #     - "./react-dashboard/.env"
-  #   restart: always
+  frontend:
+    container_name: gdash_frontend
+    build:
+      context: ./react-dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "3005:80"
+    env_file:
+      - "./react-dashboard/.env"
+    restart: always
 
 volumes:
   mongodb_data:
