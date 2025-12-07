@@ -12,9 +12,17 @@ import ExportButtons from "@/components/dashboard/ExportButtons";
 import axios from "axios";
 
 export default function Dashboard() {
-  const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
-    null
-  );
+  const [currentWeather, setCurrentWeather] = useState<WeatherData>({
+    windSpeed: 0,
+    condition: "",
+    humidity: 0,
+    precipitation: 0,
+    location: "",
+    temperature: 0,
+    timestamp: "0",
+    updatedAt: "0",
+    _id: "",
+  });
   const [insights, setInsights] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [aiLoading, setAiLoading] = useState(true);
@@ -22,7 +30,7 @@ export default function Dashboard() {
   const loadDashboardData = async () => {
     try {
       const weatherData = await weatherService.getCurrentWeather();
-      setCurrentWeather(weatherData);
+      if (Object.keys(weatherData).length) setCurrentWeather(weatherData);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         toast("Loading error", {

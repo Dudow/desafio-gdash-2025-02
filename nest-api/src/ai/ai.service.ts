@@ -23,6 +23,10 @@ export class AiService {
   async createInsight(): Promise<string[]> {
     const weathers = await this.weathersService.findAll();
 
+    if (weathers.total < 3) {
+      return JSON.parse('["Insuficient data to generate insights"]');
+    }
+
     const response = await this.client.responses.create({
       model: 'gpt-5-nano',
       input: [
