@@ -3,11 +3,19 @@ import { AppModule } from './app.module';
 import { InternalServerErrorException, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users/users.service';
 import { ConfigService } from '@nestjs/config';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors();
+
+  app.use(cookieParser());
+
+  const allowedOrigins = ['http://localhost:5173', 'http://localhost:3005'];
+  app.enableCors({
+    origin: allowedOrigins,
+    credentials: true,
+  });
 
   const configService = new ConfigService();
   const USER_DEFAULT_EMAIL = configService.get<string>('DEFAULT_USER_EMAIL');
