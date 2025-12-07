@@ -1,0 +1,31 @@
+# fly.toml app configuration file generated for gdash-rabbitmq-dev-dark-thunder-6684 on 2025-12-07T20:12:08-03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'gdash-rabbitmq-dev-dark-thunder-6684'
+primary_region = 'gru'
+
+[build]
+  image = 'rabbitmq:4-management'
+
+[env]
+  RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = '-rabbit max_message_size 104857600'
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 15672
+
+  [[services.ports]]
+    port = 15672
+    handlers = ['tls', 'http']
+
+  [[services.tcp_checks]]
+    interval = '15s'
+    timeout = '1m0s'
+    grace_period = '1s'
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
