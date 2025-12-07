@@ -22,6 +22,8 @@ LOCATION_NAME = os.getenv("LOCATION_NAME", "São Paulo - SP")
 QUEUE_NAME = os.getenv("QUEUE_NAME", "weather_queue")
 RABBIT_URL = os.getenv("RABBIT_URL", "amqp://teste:senha@rabbitmq:5672/")
 INTERVAL = int(os.getenv("INTERVAL", 10))
+FIRST_DELAY = 10
+
 
 # https://open-meteo.com/en/docs#weather_variable_documentation
 WEATHER_CODES_ENUM = {
@@ -102,12 +104,21 @@ def send_to_rabbitmq(message):
 
 
     except Exception as error:
-        logger.exception("Error sending message to RabbitMQ", error)
+        logger.error("Error sending message to RabbitMQ: %s", error)
 
 
     
 
 if __name__ == "__main__":
+    print(f"⏳ Waiting {FIRST_DELAY} seconds before first run...\n")
+    time.sleep(FIRST_DELAY)
+
+    try:
+        weather = fetch_weather()
+        send_to_rabbitmq(weather)
+    except Exception as error:
+        print("Collector Error (first run):", error)
+
     while True:
         try:
             weather = fetch_weather()
