@@ -24,7 +24,7 @@ https://youtu.be/xY0vOW2j5GM
 
     Adicionar OPENAI_API_KEY  no  .env
 
-> `OPENAI_API_KEY="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"`
+> `OPENAI_API_KEY="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"`
 
     cd ..
 
