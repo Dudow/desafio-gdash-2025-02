@@ -24,7 +24,7 @@ https://youtu.be/xY0vOW2j5GM
 
     Adicionar OPENAI_API_KEY  no  .env
 
-> `OPENAI_API_KEY="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"`
+    > A chave da api foi enviada ao email recrutamento@gdash.com.br, confira se caiu no Spam
 
     cd ..
 
