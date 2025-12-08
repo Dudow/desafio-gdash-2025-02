@@ -10,6 +10,8 @@ Coletando, processando, armazenando e exibindo dados reais de clima, enriquecido
 
 ## Vídeo de Apresentação
 
+https://youtu.be/xY0vOW2j5GM
+
 ## Como Utilizar
 
     cd react-dashboard
