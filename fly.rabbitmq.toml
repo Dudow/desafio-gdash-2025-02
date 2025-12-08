@@ -11,6 +11,8 @@ primary_region = 'gru'
 
 [env]
   RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = '-rabbit max_message_size 104857600'
+  RABBITMQ_DEFAULT_USER = 'teste'
+  RABBITMQ_DEFAULT_PASS = 'senha'
 
 [[services]]
   protocol = 'tcp'
